@@ -1,0 +1,302 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
+  height: 100vh;
+  background-color: #DAE1EC;
+}
+
+main {
+  width: 90%;
+  background-color: #FFFFFF;
+  border-radius: 5px;
+}
+
+button, input[type=checkbox] {
+  cursor: pointer;
+}
+
+tr:nth-child(even) {
+  background-color: #F4F7FC;
+}
+
+th {
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #606F89;
+  font-size: 12px;
+  text-align: left;
+}
+
+td {
+  font-size: 14px;
+  color: #2E3B52;
+}
+
+th, td {
+  padding: 15px 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  background-color: #F4F7FC;
+  padding: 20px 30px;
+}
+
+.filter_btn {
+  background-color: transparent;
+  border: none;
+  margin-right: 30px;
+}
+
+.search_wrapper {
+  display: flex;
+  align-items: center;
+  width: 300px;
+  height: 40px;
+  padding: 10px;
+  background-color: #DAE1EC;
+  border-radius: 4px;
+}
+.search_wrapper::before {
+  content: "\f002";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: #6F809E;
+  font-size: 20px;
+  margin-right: 10px;
+}
+.search_wrapper input {
+  font-family: "Inter", sans-serif;
+  flex: 1;
+  height: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: #2E3B52;
+}
+
+.add_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 148px;
+  height: 40px;
+  background-color: #0A65FF;
+  border: none;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-left: auto;
+  border-radius: 4px;
+}
+.add_btn::before {
+  content: url(../images/plus-icon.svg);
+  margin-right: 10px;
+}
+
+.data_table {
+  width: 100%;
+  border-spacing: 0;
+}
+.data_table thead {
+  background-color: #F4F7FC;
+}
+
+.checkbox {
+  padding-left: 30px;
+}
+.checkbox input {
+  width: 20px;
+  height: 20px;
+}
+
+.select_all {
+  text-align: left;
+}
+
+.sort_by::after {
+  content: "\f0dc";
+  cursor: pointer;
+  position: relative;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: #7D90B2;
+  margin-left: 5px;
+}
+.sort_by.asc::after, .sort_by.desc::after {
+  color: #000000;
+}
+.sort_by.asc::after {
+  content: "\f0de";
+  top: 3px;
+}
+.sort_by.desc::after {
+  content: "\f0dd";
+  bottom: 3px;
+}
+
+.customer_name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.serial_number, .currency {
+  display: block;
+  font-size: 12px;
+  color: #606F89;
+  text-transform: uppercase;
+}
+
+.currency {
+  text-align: right;
+}
+
+.rate, .balance, .diposit {
+  display: block;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.balance.positive {
+  color: #008400;
+}
+.balance.negative {
+  color: #E01A1A;
+}
+
+.status {
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-radius: 11px;
+  padding: 4px 5px;
+}
+.status.active {
+  background-color: #0A65FF;
+  color: #FFFFFF;
+}
+.status.active::before {
+  content: "active";
+}
+.status.inactive {
+  border: 1px solid #606F89;
+}
+.status.inactive:before {
+  content: "inactive";
+}
+
+.delete_btn, .edit_btn {
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  color: #7D90B2;
+  transition: color 0.3s ease-in-out;
+}
+
+.delete_btn:hover {
+  color: #E01A1A;
+}
+
+.edit_btn {
+  margin-right: 15px;
+}
+.edit_btn:hover {
+  color: #008400;
+}
+
+.customer {
+  cursor: pointer;
+}
+.customer:hover, .customer.selected {
+  background-color: #EBF2FF;
+}
+.customer:hover .checkbox::before, .customer.selected .checkbox::before {
+  height: 100%;
+}
+
+.checkbox {
+  position: relative;
+}
+.checkbox::before {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 0;
+  top: 0;
+  left: 0;
+  background-color: #0A65FF;
+  transition: 0.4s ease-in-out;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: #606F89;
+  margin: 15px 0;
+  padding: 0 30px;
+}
+.footer .active_customers {
+  flex: 1;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.footer .active_customers .active_customers_number {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rows_per_page {
+  position: relative;
+}
+.rows_per_page::after {
+  content: "\f0dd";
+  position: absolute;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  top: -2px;
+  right: -2px;
+  font-size: 13px;
+}
+.rows_per_page select {
+  cursor: pointer;
+  margin-left: 3px;
+  background: transparent;
+  border: 0;
+  font-family: "Inter", sans-serif;
+  color: #606F89;
+  font-weight: 600;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  padding-right: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.active_page {
+  margin: 0 50px;
+}
+
+.prev_btn {
+  margin-right: 50px;
+}
+
+.prev_btn, .next_btn {
+  background: transparent;
+  border: 0;
+  font-size: 18px;
+  color: #606F89;
+}/*# sourceMappingURL=style.css.map */

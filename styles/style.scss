@@ -1,0 +1,303 @@
+@use 'mixins' as *;
+@use 'variables' as *;
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    @include flexCenter;
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
+    background-color: #DAE1EC;
+}
+
+main{
+    width: 90%;
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    
+}
+
+button, input[type="checkbox"]{
+    cursor: pointer;
+}
+
+tr:nth-child(even){
+    background-color: #F4F7FC;
+}
+
+th{
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #606F89;
+    font-size: 12px;
+    text-align: left
+}
+
+td{
+    font-size: 14px;
+    color: #2E3B52;
+}
+
+th,td{
+    padding: 15px 0;
+}
+
+.header{
+    @include flexAlignCenter;
+    background-color: #F4F7FC;
+    padding: 20px 30px;
+}
+
+.filter_btn{
+    background-color: transparent;
+    border: none;
+    margin-right: 30px;
+}
+
+.search_wrapper{
+    @include flexAlignCenter;
+    width: 300px;
+    height: 40px;
+    padding: 10px;
+    background-color: #DAE1EC;
+    border-radius: 4px;
+    &::before{
+        content: "\f002";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        color: #6F809E;
+        font-size: 20px;
+        margin-right: 10px;
+    }
+    input{
+        font-family: 'Inter', sans-serif;
+        flex: 1;
+        height: 100%;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        color: #2E3B52;
+    }
+}
+
+.add_btn{
+    @include flexCenter;
+    width: 148px;
+    height: 40px;
+    background-color: $primaryColor;
+    border: none;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-left: auto;
+    border-radius: 4px;
+    &::before{
+        content: url(../images/plus-icon.svg);
+        margin-right: 10px;
+    }
+}
+
+.data_table{
+    width: 100%;
+    border-spacing: 0;
+    thead{
+        background-color: #F4F7FC;
+    }
+}
+
+.checkbox{
+    padding-left: 30px;
+    input{
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.select_all{
+    text-align: left;
+}
+
+.sort_by{
+    &::after{
+        content: "\f0dc";
+        cursor: pointer;
+        position: relative;
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        color: #7D90B2;
+        margin-left: 5px;
+    }
+    &.asc::after, &.desc::after{
+        color: #000000;
+    }
+    &.asc::after{
+        content: "\f0de";
+        top: 3px;
+    }
+    
+    &.desc::after{
+        content: "\f0dd";
+        bottom: 3px;
+    }
+}
+
+.customer_name{
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+.serial_number, .currency{
+    display: block;
+    font-size: 12px;
+    color: #606F89;
+    text-transform: uppercase;
+}
+
+.currency{
+    text-align: right;
+}
+
+.rate, .balance, .diposit{
+    display: block;
+    width: fit-content;
+}
+
+.balance{
+    &.positive{
+        color: #008400;
+    }
+    &.negative{
+        color: #E01A1A;
+    }
+}
+
+.status{
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-radius: 11px;
+    padding: 4px 5px;
+    &.active{
+        background-color: $primaryColor;
+        color: #FFFFFF;
+    }
+    &.active::before{
+        content: "active";
+    }
+    &.inactive{
+        border: 1px solid #606F89;
+    }
+    &.inactive:before{
+        content: "inactive";
+    }
+}
+
+.delete_btn, .edit_btn{
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    color: #7D90B2;
+    transition: color 0.3s ease-in-out;
+}
+
+.delete_btn:hover{
+    color: #E01A1A;
+}
+
+.edit_btn{
+    margin-right: 15px;
+    &:hover{
+        color: #008400;
+    }
+}
+
+.customer{
+    cursor: pointer;
+    &:hover,
+    &.selected{
+        background-color: #EBF2FF;
+        .checkbox::before{
+            height: 100%;
+        }
+    }
+
+}
+
+.checkbox{
+    position: relative;
+    &::before{
+        content: "";
+        position: absolute;
+        width: 5px;
+        height: 0;
+        top: 0;
+        left: 0;
+        background-color: $primaryColor;
+        transition: 0.4s ease-in-out;
+    }
+}
+
+.footer{
+    @include flexAlignCenter;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: #606F89;
+    margin: 15px 0;
+    padding: 0 30px;
+    .active_customers{
+        flex: 1;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        .active_customers_number{
+            font-size: 12px;
+            font-weight: 600;
+        }
+    }
+}
+
+.rows_per_page{
+    position: relative;
+    &::after{
+        content: "\f0dd";
+        position: absolute;
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        top: -2px;
+        right: -2px;
+        font-size: 13px;
+    }
+    select{
+        cursor: pointer;
+        margin-left: 3px;
+        background: transparent;
+        border: 0;
+        font-family: "Inter", sans-serif;
+        color: #606F89;
+        font-weight: 600;
+        appearance: none;
+        padding-right: 8px;
+        position: relative;
+        z-index: 1;
+    }
+}
+
+.active_page{
+    margin: 0 50px;
+}
+
+.prev_btn{
+    margin-right: 50px;
+}
+
+.prev_btn, .next_btn{
+    background: transparent;
+    border: 0;
+    font-size: 18px;
+    color: #606F89;
+}
