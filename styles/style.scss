@@ -32,7 +32,7 @@ tr:nth-child(even){
 th{
     text-transform: uppercase;
     font-weight: 600;
-    color: #606F89;
+    color: $secondaryColor;
     font-size: 12px;
     text-align: left
 }
@@ -152,7 +152,7 @@ th,td{
 .serial_number, .currency{
     display: block;
     font-size: 12px;
-    color: #606F89;
+    color: $secondaryColor;
     text-transform: uppercase;
 }
 
@@ -189,7 +189,7 @@ th,td{
         content: "active";
     }
     &.inactive{
-        border: 1px solid #606F89;
+        border: 1px solid $secondaryColor;
     }
     &.inactive:before{
         content: "inactive";
@@ -246,7 +246,7 @@ th,td{
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.6px;
-    color: #606F89;
+    color: $secondaryColor;
     margin: 15px 0;
     padding: 0 30px;
     .active_customers{
@@ -278,12 +278,13 @@ th,td{
         background: transparent;
         border: 0;
         font-family: "Inter", sans-serif;
-        color: #606F89;
+        color: $secondaryColor;
         font-weight: 600;
         appearance: none;
         padding-right: 8px;
         position: relative;
         z-index: 1;
+        outline: none;
     }
 }
 
@@ -299,5 +300,5 @@ th,td{
     background: transparent;
     border: 0;
     font-size: 18px;
-    color: #606F89;
+    color: $secondaryColor;
 }
