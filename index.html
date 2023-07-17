@@ -14,11 +14,10 @@
 <body>
     <main>
         <div class="header">
-            <button class="filter_btn"><img src="images/filter-icon.svg" alt=""></button>
             <div class="search_wrapper">
-                <input type="search" name="" id="" placeholder="Search">
+                <input type="text" name="" id="" placeholder="Search">
             </div>
-            <button class="add_btn">Add Customer</button>
+            <button class="add_customer_btn">Add Customer</button>
         </div>
         <table class="data_table">
             <thead>
@@ -186,13 +185,25 @@
         </table>
         <div class="footer">
             <div class="active_customers">
-                active customers:
+                active customers: 
                 <span class="active_customers_number">479</span>/
                 <span class="all_customers_number">706</span>
             </div>
+            <nav class="pagination">
+                <ul class="pagination_list">
+                    <li class="pagination_item"><a href="#" class="pagination_link_prev disabled">&lt;Prev</a></li>
+                <li class="pagination_item"><a href="#" class="pagination_link">1</a></li>
+                <li class="pagination_item"><a href="#" class="pagination_link">2</a></li>
+                <li class="pagination_item"><a href="#" class="pagination_link">3</a></li>
+                <li class="pagination_item">...</li>
+                <li class="pagination_item"><a href="#" class="pagination_link">20</a></li>
+                <li class="pagination_item"><a href="#" class="pagination_link_next">Next&gt;</a></li>
+            </ul>
+            </nav>
             <div class="rows_per_page">
                 Rows Per Page:
                 <select name="" class="rows_per_page_list">
+                    <option value="all">All</option>
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
@@ -206,11 +217,8 @@
                 of
                 <span class="customer_number">706</span>
             </div>
-            <div class="pagination">
-                <button class="prev_btn">&lt;</button>
-                <button class="next_btn">&gt;</button>
-            </div>
         </div>
     </main>
+    <script src="script.js"></script>
 </body>
 </html>

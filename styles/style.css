@@ -14,9 +14,33 @@ body {
 }
 
 main {
+  position: relative;
   width: 90%;
   background-color: #FFFFFF;
   border-radius: 5px;
+}
+
+a {
+  text-decoration: none;
+}
+
+input, textarea {
+  font-family: "Inter", sans-serif;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  color: #2E3B52;
+  background-color: #DAE1EC;
+  resize: none;
+}
+
+label {
+  color: #2E3B52;
+}
+
+button {
+  border: none;
+  transition: 0.3s ease-in-out;
 }
 
 button, input[type=checkbox] {
@@ -53,7 +77,6 @@ th, td {
 
 .filter_btn {
   background-color: transparent;
-  border: none;
   margin-right: 30px;
 }
 
@@ -75,31 +98,29 @@ th, td {
   margin-right: 10px;
 }
 .search_wrapper input {
-  font-family: "Inter", sans-serif;
   flex: 1;
   height: 100%;
   background-color: transparent;
-  border: none;
-  outline: none;
-  color: #2E3B52;
 }
 
-.add_btn {
+.add_customer_btn {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 148px;
   height: 40px;
   background-color: #0A65FF;
-  border: none;
   font-weight: 600;
   color: #FFFFFF;
   margin-left: auto;
   border-radius: 4px;
 }
-.add_btn::before {
+.add_customer_btn::before {
   content: url(../images/plus-icon.svg);
   margin-right: 10px;
+}
+.add_customer_btn:hover {
+  background: #0C53CA;
 }
 
 .data_table {
@@ -127,6 +148,7 @@ th, td {
   cursor: pointer;
   position: relative;
   font-family: "Font Awesome 5 Free";
+  font-size: 14px;
   font-weight: 900;
   color: #7D90B2;
   margin-left: 5px;
@@ -196,7 +218,6 @@ th, td {
 
 .delete_btn, .edit_btn {
   background-color: transparent;
-  border: none;
   font-size: 20px;
   color: #7D90B2;
   transition: color 0.3s ease-in-out;
@@ -248,7 +269,6 @@ th, td {
   padding: 0 30px;
 }
 .footer .active_customers {
-  flex: 1;
   font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
@@ -260,6 +280,7 @@ th, td {
 
 .rows_per_page {
   position: relative;
+  margin-right: 50px;
 }
 .rows_per_page::after {
   content: "\f0dd";
@@ -287,17 +308,114 @@ th, td {
   outline: none;
 }
 
-.active_page {
-  margin: 0 50px;
+.pagination {
+  flex: 1;
+}
+.pagination .pagination_list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
 }
 
-.prev_btn {
-  margin-right: 50px;
-}
-
-.prev_btn, .next_btn {
-  background: transparent;
-  border: 0;
-  font-size: 18px;
+.pagination_link, .pagination_link_prev, .pagination_link_next {
   color: #606F89;
+  border: 1px solid rgba(96, 111, 137, 0.5);
+  padding: 5px 8px;
+  margin: 0 5px;
+  transition: 0.3s ease-in-out;
+}
+.pagination_link:not(.disabled):hover, .pagination_link.active, .pagination_link_prev:not(.disabled):hover, .pagination_link_prev.active, .pagination_link_next:not(.disabled):hover, .pagination_link_next.active {
+  background-color: #0A65FF;
+  color: white;
+  border-color: #0A65FF;
+}
+
+.disabled {
+  background-color: rgba(96, 111, 137, 0.2);
+  border-color: rgba(96, 111, 137, 0.2);
+  cursor: no-drop;
+}
+
+.pop_up {
+  position: absolute;
+  width: 40%;
+  background-color: #FFFFFF;
+  border-radius: 5px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 40px 15px 15px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  transition: 0.5s ease-in-out;
+}
+
+.first_name_holder {
+  margin-right: 13px;
+}
+
+.description_holder {
+  grid-area: 2/1/2/span2;
+  margin: 12px 0;
+}
+
+.inputs_holder {
+  grid-area: 3/1/3/span2;
+  display: flex;
+  gap: 13px;
+  margin-bottom: 12px;
+}
+
+.pop_up_input, .pop_up_status {
+  height: 31px;
+  padding: 5px;
+  font-size: 15px;
+  margin: 5px 0;
+  width: 100%;
+}
+
+.description_input {
+  width: 100%;
+  height: 91px;
+}
+
+.pop_up_status {
+  width: 82px;
+  color: #2E3B52;
+}
+
+.cancel_btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background-color: transparent;
+  font-size: 20px;
+  color: #2E3B52;
+  padding: 2px 6px;
+}
+.cancel_btn:hover {
+  background: #DAE1EC;
+  border-radius: 4px;
+}
+
+.add_btn, .reset_btn, .update_btn {
+  grid-area: 4;
+  font-size: 16px;
+  border-radius: 4px;
+  height: 31px;
+  color: white;
+  background: #0A65FF;
+}
+.add_btn:hover, .reset_btn:hover, .update_btn:hover {
+  background: #0C53CA;
+}
+
+.add_btn {
+  margin-right: 13px;
+}
+
+.update_btn {
+  grid-area: 4/1/4/span2;
 }/*# sourceMappingURL=style.css.map */
