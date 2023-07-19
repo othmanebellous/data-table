@@ -234,9 +234,6 @@ th, td {
   color: #008400;
 }
 
-.customer {
-  cursor: pointer;
-}
 .customer:hover, .customer.selected {
   background-color: #EBF2FF;
 }
@@ -368,7 +365,7 @@ th, td {
   margin-bottom: 12px;
 }
 
-.pop_up_input, .pop_up_status {
+.pop_up_input, .pop_up_status, .pop_up_currency {
   height: 31px;
   padding: 5px;
   font-size: 15px;
@@ -381,7 +378,7 @@ th, td {
   height: 91px;
 }
 
-.pop_up_status {
+.pop_up_status, .pop_up_currency {
   width: 82px;
   color: #2E3B52;
 }

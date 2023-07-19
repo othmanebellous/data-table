@@ -1,5 +1,11 @@
 const addCustomerBtn = document.querySelector(".add_customer_btn");
 const mainElement = document.querySelector("main");
+const customersWrapper = document.querySelector(".customers_wrapper");
+const selectAllCustomers = document.querySelector(".select_all_customers");
+const searchInput = document.querySelector(".search_input")
+let customersArray = [];
+let idToUpdate;
+let firstName, lastName, description, rate, balance, diposit, accountStatus = "active", currency = "mad";
 
 
 addCustomerBtn.addEventListener("click", ()=>{
@@ -8,230 +14,636 @@ addCustomerBtn.addEventListener("click", ()=>{
     }
 });
 
-function createPopUp(buttonType) {
-    let popUpDiv = document.createElement("div");
-    popUpDiv.classList.add("pop_up");
-    mainElement.appendChild(popUpDiv);
-    createFirstNameHolder(popUpDiv);
-    createLastNameHolder(popUpDiv);
-    createDescriptionHolder(popUpDiv);
-    createInputsHolder(popUpDiv);
-    createCancelBtn(popUpDiv);
+searchInput.addEventListener("input", ()=>{
+    displayCustomers();
+});
+
+// ------------------------------------------------ PopUp-----------------------------------------------------------
+function createPopUp(buttonType, customer) {
+    const popUpForm = document.createElement("form");
+    popUpForm.classList.add("pop_up");
+    popUpForm.setAttribute("onsubmit", "return false");
+    mainElement.appendChild(popUpForm);
+    createFirstNameHolder(popUpForm, customer);
+    createLastNameHolder(popUpForm, customer);
+    createDescriptionHolder(popUpForm, customer);
+    createInputsHolder(popUpForm, customer);
+    createCancelBtn(popUpForm);
     if (buttonType === "add") {
-        createAddBtn(popUpDiv);
-        createResetBtn(popUpDiv);
+        createAddBtn(popUpForm);
+        createResetBtn(popUpForm);
     }else{
-        createUpdateBtn(popUpDiv);
+        createUpdateBtn(popUpForm);
     }
 }
 
-function createFirstNameHolder(popUpDiv){
-    let firstNameHolder = document.createElement("div");
+function createFirstNameHolder(popUpForm, customer){
+    const firstNameHolder = document.createElement("div");
     firstNameHolder.className= "first_name_holder";
-    popUpDiv.appendChild(firstNameHolder);
+    popUpForm.appendChild(firstNameHolder);
     createFirstNameLabel(firstNameHolder);
-    createFirstNameInput(firstNameHolder);
+    createFirstNameInput(firstNameHolder, customer);
 }
 
 function createFirstNameLabel(firstNameHolder){
-    let firstNameLabel = document.createElement("label");
+    const firstNameLabel = document.createElement("label");
     firstNameLabel.setAttribute("for", "first_name");
     firstNameLabel.textContent = "First Name";
     firstNameHolder.appendChild(firstNameLabel);
 }
 
-function createFirstNameInput(firstNameHolder){
-    let firstNameInput = document.createElement("input");
-    firstNameInput.setAttribute("type", "text", "id", "first_name");
+function createFirstNameInput(firstNameHolder, customer){
+    const firstNameInput = document.createElement("input");
+    firstNameInput.setAttribute("type", "text");
+    firstNameInput.setAttribute("required", true);
     firstNameInput.className= "pop_up_input";
+    if (customer) {
+        firstNameInput.value = customer.firstName;
+        firstName = customer.firstName;
+    }
     firstNameHolder.appendChild(firstNameInput);
+    firstNameInput.addEventListener("change",()=>{
+        firstName = firstNameInput.value.trim();
+    });
 }
 
-function createLastNameHolder(popUpDiv){
-    let lastNameHolder = document.createElement("div");
+function createLastNameHolder(popUpForm, customer){
+    const lastNameHolder = document.createElement("div");
     lastNameHolder.className= "last_name_holder";
-    popUpDiv.appendChild(lastNameHolder);
+    popUpForm.appendChild(lastNameHolder);
     createLastNameLabel(lastNameHolder);
-    createLastNameInput(lastNameHolder);
+    createLastNameInput(lastNameHolder, customer);
 }
 
 function createLastNameLabel(lastNameHolder){
-    let lastNameLabel = document.createElement("label");
+    const lastNameLabel = document.createElement("label");
     lastNameLabel.setAttribute("for", "last_name");
     lastNameLabel.textContent = "Last Name";
     lastNameHolder.appendChild(lastNameLabel);
 }
 
-function createLastNameInput(lastNameHolder){
-    let lastNameInput = document.createElement("input");
-    lastNameInput.setAttribute("type", "text", "id", "last_name");
+function createLastNameInput(lastNameHolder, customer){
+    const lastNameInput = document.createElement("input");
+    lastNameInput.setAttribute("required", true);
+    lastNameInput.setAttribute("type", "text");
     lastNameInput.className= "pop_up_input";
+    if (customer) {
+        lastNameInput.value = customer.lastName;
+        lastName = customer.lastName;
+    }
     lastNameHolder.appendChild(lastNameInput);
+    lastNameInput.addEventListener("change",()=>{
+        lastName = lastNameInput.value.trim();
+    });
 }
 
-function createDescriptionHolder(popUpDiv){
-    let descriptionHolder = document.createElement("div");
+function createDescriptionHolder(popUpForm, customer){
+    const descriptionHolder = document.createElement("div");
     descriptionHolder.className= "description_holder";
-    popUpDiv.appendChild(descriptionHolder);
+    popUpForm.appendChild(descriptionHolder);
     createDescriptionLabel(descriptionHolder);
-    createTextArea(descriptionHolder);
+    createTextArea(descriptionHolder, customer);
 }
 
 function createDescriptionLabel(descriptionHolder){
-    let descriptionLabel = document.createElement("label");
+    const descriptionLabel = document.createElement("label");
     descriptionLabel.setAttribute("for", "description");
     descriptionLabel.textContent = "Description";
     descriptionHolder.appendChild(descriptionLabel);
 }
 
-function createTextArea(descriptionHolder){
-    let textArea = document.createElement("textarea");
+function createTextArea(descriptionHolder, customer){
+    const textArea = document.createElement("textarea");
+    textArea.setAttribute("required", true);
     textArea.setAttribute("id", "description");
+    if (customer) {
+        textArea.value = customer.description;
+        description = customer.description;
+    }
     textArea.classList.add("description_input", "pop_up_input");
     descriptionHolder.appendChild(textArea);
+    textArea.addEventListener("change",()=>{
+        description = textArea.value.trim();
+    });
 }
 
-function createInputsHolder(popUpDiv){
-    let inputsHolder = document.createElement("div");
+function createInputsHolder(popUpForm, customer){
+    const inputsHolder = document.createElement("div");
     inputsHolder.className= "inputs_holder";
-    popUpDiv.appendChild(inputsHolder);
-    createRateHolder(inputsHolder);
-    createBalanceHolder(inputsHolder);
-    createDipositHolder(inputsHolder);
-    createStatusHolder(inputsHolder);
+    popUpForm.appendChild(inputsHolder);
+    createRateHolder(inputsHolder, customer);
+    createBalanceHolder(inputsHolder, customer);
+    createDipositHolder(inputsHolder, customer);
+    createStatusHolder(inputsHolder, customer);
+    createCurrencyHolder(inputsHolder, customer);
 }
 
-function createRateHolder(inputsHolder){
-    let rateHolder = document.createElement("div");
+function createRateHolder(inputsHolder, customer){
+    const rateHolder = document.createElement("div");
     inputsHolder.appendChild(rateHolder);
     createRateLabel(rateHolder);
-    createRateInput(rateHolder);
+    createRateInput(rateHolder, customer);
 }
 
 function createRateLabel(rateHolder){
-    let rateLabel = document.createElement("label");
+    const rateLabel = document.createElement("label");
     rateLabel.setAttribute("for", "rate");
     rateLabel.textContent ="Rate";
     rateHolder.appendChild(rateLabel);
 }
 
-function createRateInput(rateHolder){
-    let rateInput = document.createElement("input");
-    rateInput.setAttribute("type", "number", "id", "rate");
+function createRateInput(rateHolder, customer){
+    const rateInput = document.createElement("input");
+    rateInput.setAttribute("required", true);
+    rateInput.setAttribute("type", "number");
     rateInput.className= "pop_up_input";
+    if (customer) {
+        rateInput.value = customer.rate;
+        rate = customer.rate;
+    }
     rateHolder.appendChild(rateInput);
+    rateInput.addEventListener("change",()=>{
+        rate = rateInput.value.trim();
+    });
 }
 
-function createBalanceHolder(inputsHolder){
-    let balanceHolder = document.createElement("div");
+function createBalanceHolder(inputsHolder, customer){
+    const balanceHolder = document.createElement("div");
     inputsHolder.appendChild(balanceHolder);
     createBalanceLabel(balanceHolder);
-    createBalanceInput(balanceHolder);
+    createBalanceInput(balanceHolder, customer);
 }
 
 function createBalanceLabel(balanceHolder){
-    let balanceLabel = document.createElement("label");
+    const balanceLabel = document.createElement("label");
     balanceLabel.setAttribute("for", "balance");
     balanceLabel.textContent = "Balance";
     balanceHolder.appendChild(balanceLabel);
 }
 
-function createBalanceInput(balanceHolder){
-    let balanceInput = document.createElement("input");
-    balanceInput.setAttribute("type", "number", "id", "balance");
+function createBalanceInput(balanceHolder, customer){
+    const balanceInput = document.createElement("input");
+    balanceInput.setAttribute("required", true);
+    balanceInput.setAttribute("type", "number");
     balanceInput.className= "pop_up_input";
+    if (customer) {
+        balanceInput.value = customer.balance;
+        balance = customer.balance;
+    }
     balanceHolder.appendChild(balanceInput);
+    balanceInput.addEventListener("change",()=>{
+        balance = balanceInput.value.trim();
+    });
 }
 
-function createDipositHolder(inputsHolder){
-    let dipositHolder = document.createElement("div");
+function createDipositHolder(inputsHolder, customer){
+    const dipositHolder = document.createElement("div");
     inputsHolder.appendChild(dipositHolder);
     createDipositLabel(dipositHolder);
-    createDipositInput(dipositHolder);
+    createDipositInput(dipositHolder, customer);
 }
 
 function createDipositLabel(dipositHolder){
-    let dipositLabel = document.createElement("label");
+    const dipositLabel = document.createElement("label");
     dipositLabel.setAttribute("for", "diposit");
     dipositLabel.textContent = "Diposit";
     dipositHolder.appendChild(dipositLabel);
 }
 
-function createDipositInput(dipositHolder){
-    let dipositInput = document.createElement("input");
-    dipositInput.setAttribute("type", "number", "id", "diposit");
+function createDipositInput(dipositHolder, customer){
+    const dipositInput = document.createElement("input");
+    dipositInput.setAttribute("required", true);
+    dipositInput.setAttribute("type", "number");
     dipositInput.className= "pop_up_input";
+    if (customer) {
+        dipositInput.value = customer.diposit;
+        diposit = customer.diposit;
+    }
     dipositHolder.appendChild(dipositInput);
+    dipositInput.addEventListener("change",()=>{
+        diposit = dipositInput.value.trim();
+    });
 }
 
-function createStatusHolder(inputsHolder){
-    let statusHolder = document.createElement("div");
+function createStatusHolder(inputsHolder, customer){
+    const statusHolder = document.createElement("div");
     inputsHolder.appendChild(statusHolder);
     createStatusLabel(statusHolder);
-    createStatusSelect(statusHolder);
+    createStatusSelect(statusHolder, customer);
 }
 
 function createStatusLabel(statusHolder){
-    let statusLabel = document.createElement("label");
+    const statusLabel = document.createElement("label");
     statusLabel.textContent = "Status";
     statusHolder.appendChild(statusLabel);
 }
 
-function createStatusSelect(statusHolder){
-    let statusSelect = document.createElement("select");
+function createStatusSelect(statusHolder, customer){
+    const statusSelect = document.createElement("select");
     statusSelect.className = "pop_up_status";
     statusHolder.appendChild(statusSelect);
     createActiveOption(statusSelect);
     createInactiveOption(statusSelect);
+    if (customer) {
+        statusSelect.value = customer.status;
+        accountStatus = customer.status;
+    }
+    statusSelect.addEventListener("change",()=>{
+        accountStatus = statusSelect.value;
+    });
 }
 
 function createActiveOption(statusSelect){
-    let activeOption = document.createElement("option");
+    const activeOption = document.createElement("option");
     activeOption.setAttribute("value", "active");
     activeOption.textContent = "Active";
     statusSelect.appendChild(activeOption);
 }
 
 function createInactiveOption(statusSelect){
-    let inactiveOption = document.createElement("option");
+    const inactiveOption = document.createElement("option");
     inactiveOption.setAttribute("value", "inactive");
     inactiveOption.textContent = "Inactive";
     statusSelect.appendChild(inactiveOption);
 }
 
-function createCancelBtn(popUpDiv){
-    let cancelBtn = document.createElement("button");
+function createCurrencyHolder(inputsHolder, customer){
+    const currencyHolder = document.createElement("div");
+    inputsHolder.appendChild(currencyHolder);
+    createCurrencyLabel(currencyHolder);
+    createCurrencySelect(currencyHolder, customer);
+}
+
+function createCurrencyLabel(currencyHolder){
+    const currencyLabel = document.createElement("label");
+    currencyLabel.textContent = "Currency";
+    currencyHolder.appendChild(currencyLabel);
+}
+
+function createCurrencySelect(currencyHolder, customer){
+    const currencySelect = document.createElement("select");
+    currencySelect.className = "pop_up_currency";
+    currencyHolder.appendChild(currencySelect);
+    createMadOption(currencySelect);
+    createUsdOption(currencySelect);
+    createEurOption(currencySelect);
+    if (customer) {
+        currencySelect.value = customer.currency;
+        currency = customer.currency;
+    }
+    currencySelect.addEventListener("change",()=>{
+        currency = currencySelect.value;
+    });
+}
+
+function createMadOption(currencySelect){
+    const madOption = document.createElement("option");
+    madOption.setAttribute("value", "mad");
+    madOption.textContent = "mad";
+    currencySelect.appendChild(madOption);
+}
+
+function createUsdOption(currencySelect){
+    const usdOption = document.createElement("option");
+    usdOption.setAttribute("value", "usd");
+    usdOption.textContent = "usd";
+    currencySelect.appendChild(usdOption);
+}
+
+function createEurOption(currencySelect){
+    const eurOption = document.createElement("option");
+    eurOption.setAttribute("value", "euro");
+    eurOption.textContent = "euro";
+    currencySelect.appendChild(eurOption);
+}
+
+function createCancelBtn(popUpForm){
+    const cancelBtn = document.createElement("button");
     cancelBtn.className = "cancel_btn";
-    let cancelIcon = document.createElement("i");
+    const cancelIcon = document.createElement("i");
     cancelIcon.classList.add("fa-solid", "fa-x");
     cancelBtn.appendChild(cancelIcon);
-    popUpDiv.appendChild(cancelBtn);
+    popUpForm.appendChild(cancelBtn);
     cancelBtn.addEventListener("click", ()=>{
-        closePopUp(popUpDiv);
+        closePopUp(popUpForm);
+    });
+}
+
+function closePopUp(popUpForm){
+    popUpForm.remove();
+}
+
+function createAddBtn(popUpForm){
+    const addBtn = document.createElement("button");
+    addBtn.className = "add_btn";
+    addBtn.setAttribute("type", "submit");
+    addBtn.textContent = "Add";
+    popUpForm.appendChild(addBtn);
+    addBtn.addEventListener("click", ()=>{
+        if (firstName && lastName && description && rate && balance && diposit && accountStatus && currency) {
+            createNewCustomer();
+        }
     })
 }
 
-function closePopUp(popUpDiv){
-    popUpDiv.remove();
-}
-
-function createAddBtn(popUpDiv){
-    let addBtn = document.createElement("button");
-    addBtn.className = "add_btn";
-    addBtn.textContent = "Add";
-    popUpDiv.appendChild(addBtn);
-}
-
-function createResetBtn(popUpDiv){
-    let resetBtn = document.createElement("button");
+function createResetBtn(popUpForm){
+    const resetBtn = document.createElement("button");
     resetBtn.className = "reset_btn";
     resetBtn.textContent = "Reset";
-    popUpDiv.appendChild(resetBtn);
+    popUpForm.appendChild(resetBtn);
+    resetBtn.addEventListener("click", ()=>{
+        clearCustomerValues();
+    })
 }
 
-function createUpdateBtn(popUpDiv){
-    let updateBtn = document.createElement("button");
+function createUpdateBtn(popUpForm){
+    const updateBtn = document.createElement("button");
     updateBtn.className = "update_btn";
+    updateBtn.setAttribute("type", "submit");
     updateBtn.textContent = "Update";
-    popUpDiv.appendChild(updateBtn);
+    popUpForm.appendChild(updateBtn);
+    updateBtn.addEventListener("click", ()=>{
+        updateCustomer(idToUpdate);
+    })
+}
+// ------------------------------------------------ Customers -----------------------------------------------------------
+
+if(localStorage.getItem("customers") && JSON.parse(localStorage.getItem('customers')).length !== 0){
+    customersArray = JSON.parse(localStorage.getItem("customers"));
+    displayCustomers();
+}
+
+selectAllCustomers.addEventListener("change",()=>{
+    customersArray.forEach(customer =>{
+        if (selectAllCustomers.checked) {
+            customer.selected = true;
+        }else{
+            customer.selected = false;
+        }
+    })
+    displayCustomers();
+    localStorage.setItem("customers", JSON.stringify(customersArray));
+})
+
+function createNewCustomer(){
+    let customer = {
+        id: Date.now(),
+        firstName: `${firstName.charAt(0).toUpperCase()}${firstName.slice(1).toLowerCase()}`,
+        lastName: `${lastName.charAt(0).toUpperCase()}${lastName.slice(1).toLowerCase()}`, 
+        description: description,
+        rate: rate,
+        balance: balance,
+        diposit: diposit,
+        status: accountStatus,
+        currency: currency,
+        selected: false,
+    }
+    addCustomerToLocalStorage(customer);
+    clearCustomerValues();
+}
+
+function addCustomerToLocalStorage(customer){
+    customersArray.unshift(customer);
+    localStorage.setItem("customers", JSON.stringify(customersArray));
+    displayCustomers();
+}
+
+function displayCustomers(){
+    let searchValue = document.querySelector(".search_input").value.trim().toLocaleLowerCase();
+    let filteredArray = customersArray.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchValue) || customer.lastName.toLocaleLowerCase().includes(searchValue) || customer.description.toLocaleLowerCase().includes(searchValue));
+   addCustomersToPage(filteredArray);
+}
+
+function addCustomersToPage(filteredArray){
+    customersWrapper.innerHTML = "";
+    filteredArray.forEach(customer =>{
+        createCustomerRow(customer);
+
+    });
+
+    function createCustomerRow(customer){
+        const customerRow = document.createElement("tr");
+        customerRow.setAttribute("data-id", customer.id);
+        if (customer.selected) {
+            customerRow.classList.add("customer", "selected");
+
+        }else{
+            customerRow.className = "customer";
+        }
+        customersWrapper.appendChild(customerRow);
+        createCheckBox(customerRow, customer);
+        createCustomerName(customerRow, customer);
+        createCustomerDescription(customerRow, customer);
+        createCustomerRate(customerRow, customer);
+        createCustomerBalance(customerRow, customer);
+        createCustomerDiposit(customerRow, customer);
+        createCustomerStatus(customerRow, customer);
+        createActionsHolder(customerRow, customer);
+    }
+}
+
+function createCheckBox(customerRow, customer){
+    const checkBoxHolder = document.createElement("td");
+    checkBoxHolder.className ="checkbox";
+    customerRow.appendChild(checkBoxHolder);
+    createCheckBoxInput(checkBoxHolder, customer);
+}
+
+function createCheckBoxInput(checkBoxHolder, customer){
+    const checkBoxInput = document.createElement("input");
+    checkBoxInput.className ="checkbox_input";
+    if (customer.selected) {
+        checkBoxInput.setAttribute("checked", true);
+    }
+    checkBoxInput.setAttribute("type", "checkbox");
+    checkBoxInput.setAttribute("required", true);
+    checkBoxHolder.appendChild(checkBoxInput);
+    checkBoxInput.addEventListener("change", ()=>{
+        if (checkBoxInput.checked) {
+            customer.selected = true;
+        }else{
+            customer.selected = false;
+        }
+        displayCustomers();
+        //update local storage
+        localStorage.setItem("customers", JSON.stringify(customersArray));
+    })
+}
+
+function createCustomerName(customerRow, customer){
+    const customerName = document.createElement("td");
+    customerName.className = "customer_name";
+    customerName.textContent = `${customer.firstName} ${customer.lastName}`;
+    customerRow.appendChild(customerName);
+    createSerialNumber(customerName, customer);
+}
+
+function createSerialNumber(customerName, customer){
+    const serialNumber = document.createElement("span");
+    serialNumber.className ="serial_number";
+    serialNumber.textContent = customer.id.toString().substr(0,10);
+    customerName.appendChild(serialNumber);
+}
+
+function createCustomerDescription(customerRow, customer){
+    const customerDescription = document.createElement("td");
+    customerRow.appendChild(customerDescription);
+    createDescriptionParagraph(customerDescription, customer);
+}
+
+function createDescriptionParagraph(customerDescription, customer){
+    const descriptionParagraph = document.createElement("p");
+    descriptionParagraph.className = "customer_description";
+    let descriptionContent = customer.description.length < 40 ? customer.description: `${customer.description.substr(0, 40)}...`
+    descriptionParagraph.textContent = `${descriptionContent.charAt(0).toUpperCase()}${descriptionContent.slice(1).toLowerCase()}`;
+    customerDescription.appendChild(descriptionParagraph);
+}
+
+function createCustomerRate(customerRow, customer){
+    const customerRateHolder = document.createElement("td");
+    customerRateHolder.className ="customer_rate_holder";
+    customerRow.appendChild(customerRateHolder);
+    createRateSpan(customerRateHolder, customer);
+}
+
+function createRateSpan(customerRateHolder, customer){
+    const customerRate = document.createElement("span");
+    customerRate.className ="rate";
+    customerRate.textContent = Number(customer.rate).toFixed(2);
+    customerRateHolder.appendChild(customerRate);
+    createCurrencySpan(customerRate, customer);
+}
+
+function createCurrencySpan(customerRate, customer){
+    const currencySpan = document.createElement("span");
+    currencySpan.className = "currency";
+    currencySpan.textContent = customer.currency;
+    customerRate.appendChild(currencySpan);
+}
+
+function createCustomerBalance(customerRow, customer){
+    const customerBalanceHolder = document.createElement("td");
+    customerBalanceHolder.className ="customer_balance_holder";
+    customerRow.appendChild(customerBalanceHolder);
+    createBalanceSpan(customerBalanceHolder, customer);
+}
+
+function createBalanceSpan(customerBalanceHolder, customer){
+    const customerBalance = document.createElement("span");
+    customer.balance >= 0 ? 
+    customerBalance.classList.add("balance", "positive"):
+    customerBalance.classList.add("balance", "negative");
+    customerBalance.textContent = Number(customer.balance).toFixed(2);
+    customerBalanceHolder.appendChild(customerBalance);
+    createCurrencySpan(customerBalance, customer);
+}
+
+function createCustomerDiposit(customerRow, customer){
+    const customerDipositHolder = document.createElement("td");
+    customerDipositHolder.className ="customer_diposit_holder";
+    customerRow.appendChild(customerDipositHolder);
+    createDipositSpan(customerDipositHolder, customer);
+}
+
+function createDipositSpan(customerDipositHolder, customer){
+    const customerDiposit = document.createElement("span");
+    customerDiposit.className ="diposit";
+    customerDiposit.textContent = Number(customer.diposit).toFixed(2);
+    customerDipositHolder.appendChild(customerDiposit);
+    createCurrencySpan(customerDiposit, customer);
+}
+
+function createCustomerStatus(customerRow, customer){
+    const customerStatusHolder = document.createElement("td");
+    customerRow.appendChild(customerStatusHolder);
+    createStatusSpan(customerStatusHolder, customer);
+}
+
+function createStatusSpan(customerStatusHolder, customer){
+    const customerStatus = document.createElement("span");
+    if (customer.status === "active") {
+        customerStatus.classList.add("status", "active");
+    }else{
+        customerStatus.classList.add("status", "inactive");
+    }
+    customerStatusHolder.appendChild(customerStatus);
+}
+
+function createActionsHolder(customerRow, customer){
+    const actionsHolder = document.createElement("td");
+    customerRow.appendChild(actionsHolder);
+    createEditBtn(actionsHolder, customer);
+    createDeleteBtn(actionsHolder, customer);
+}
+
+function createEditBtn(actionsHolder, customer){
+    const editBtn = document.createElement("button");
+    editBtn.className = "edit_btn";
+    actionsHolder.appendChild(editBtn);
+    createEditIcon(editBtn);
+    editBtn.addEventListener("click", ()=>{
+        createPopUp("edit", customer);
+        idToUpdate = customer.id;
+    })
+}
+
+function createEditIcon(editBtn){
+    const editIcon = document.createElement("i");
+    editIcon.classList.add("fa-solid", "fa-pen");
+    editBtn.appendChild(editIcon);
+}
+
+function createDeleteBtn(actionsHolder){
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete_btn";
+    actionsHolder.appendChild(deleteBtn);
+    createDeleteIcon(deleteBtn);
+    deleteBtn.addEventListener("click", ()=>{
+        deleteCustomer(actionsHolder.parentElement.getAttribute("data-id"));
+    });
+}
+
+function deleteCustomer(id){
+    if (confirm("Are you sure you want to delete this customer?")) {
+        customersArray = customersArray.filter(customer => customer.id != id);
+        displayCustomers();
+        localStorage.setItem("customers", JSON.stringify(customersArray));
+    }
+}
+
+function createDeleteIcon(deleteBtn){
+    const deleteIcon = document.createElement("i");
+    deleteIcon.classList.add("fa-solid", "fa-trash-can");
+    deleteBtn.appendChild(deleteIcon);
+}
+
+function clearCustomerValues(){
+    //clear inputs
+    document.querySelectorAll(".pop_up_input").forEach(input =>{
+        input.value = "";
+    });
+    //reset variables
+    firstName = ""; lastName = ""; description = ""; rate = 0;
+    balance = 0; diposit = 0; accountStatus = "active", currency="mad";
+    //reset account status
+    document.querySelector(".pop_up_status").value = accountStatus;
+    closePopUp(document.querySelector(".pop_up"));
+}
+
+function updateCustomer(idToUpdate){
+    customersArray.forEach(customer =>{
+        if (customer.id === idToUpdate) {
+            customer.firstName = `${firstName.charAt(0).toUpperCase()}${firstName.slice(1).toLowerCase()}`;
+            customer.lastName= `${lastName.charAt(0).toUpperCase()}${lastName.slice(1).toLowerCase()}`; 
+            customer.description= description;
+            customer.rate= rate;
+            customer.balance= balance;
+            customer.diposit= diposit;
+            customer.status= accountStatus;
+            customer.currency= currency;
+        }
+    });
+    displayCustomers();
+    localStorage.setItem("customers", JSON.stringify(customersArray));
+    clearCustomerValues();
 }
