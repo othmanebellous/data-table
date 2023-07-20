@@ -143,25 +143,22 @@ th, td {
   text-align: left;
 }
 
-.sort_by::after {
-  content: "\f0dc";
+.sort_by {
   cursor: pointer;
-  position: relative;
-  font-family: "Font Awesome 5 Free";
   font-size: 14px;
-  font-weight: 900;
   color: #7D90B2;
   margin-left: 5px;
+  background-color: transparent;
+  border: none;
 }
-.sort_by.asc::after, .sort_by.desc::after {
+.sort_by .asc, .sort_by .desc {
   color: #000000;
+  position: relative;
 }
-.sort_by.asc::after {
-  content: "\f0de";
+.sort_by .asc {
   top: 3px;
 }
-.sort_by.desc::after {
-  content: "\f0dd";
+.sort_by .desc {
   bottom: 3px;
 }
 
@@ -277,7 +274,6 @@ th, td {
 
 .rows_per_page {
   position: relative;
-  margin-right: 50px;
 }
 .rows_per_page::after {
   content: "\f0dd";

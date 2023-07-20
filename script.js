@@ -3,7 +3,8 @@ const header = document.querySelector(".header");
 const addCustomerBtn = document.querySelector(".add_customer_btn");
 const customersWrapper = document.querySelector(".customers_wrapper");
 const selectAllCustomers = document.querySelector(".select_all_customers");
-const searchInput = document.querySelector(".search_input")
+const searchInput = document.querySelector(".search_input");
+const sortByBtns = document.querySelectorAll(".sort_by");
 let customersArray = [];
 let idToUpdate;
 let firstName, lastName, description, rate, balance, diposit, accountStatus = "active", currency = "mad";
@@ -14,10 +15,64 @@ addCustomerBtn.addEventListener("click", ()=>{
         createPopUp("add");
     }
 });
-
+// ------------------------------------------------ Search -----------------------------------------------------------
+let searchValue ="";
 searchInput.addEventListener("input", ()=>{
+    searchValue = searchInput.value.trim().toLocaleLowerCase();
     displayCustomers();
 });
+
+// ------------------------------------------------ Sort-----------------------------------------------------------
+let isSorted = false;
+sortByBtns.forEach(button =>{
+    button.addEventListener("click", ()=>{
+        resetSort();
+        let filteredArray = customersArray.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchValue) || customer.lastName.toLocaleLowerCase().includes(searchValue) || customer.description.toLocaleLowerCase().includes(searchValue));
+        sortCustomers(button, filteredArray);
+        updateActiveCustomersNumbers();
+    })
+});
+
+function sortCustomers(button, filteredArray){
+    let sortFunction;
+    if (button.classList.contains("sort_by_name")) {
+        sortFunction = function(a, b){
+            if(a.firstName < b.firstName) { return -1; }
+            if(a.firstName > b.firstName) { return 1; }
+            return 0;
+        };
+    }else if(button.classList.contains("sort_by_status")){
+        sortFunction = function(a, b){
+            if(a.status < b.status) { return -1; }
+            if(a.status > b.status) { return 1; }
+            return 0;
+        };    
+    }else{
+        let sortByValue = button.parentElement.textContent;
+        sortFunction = function(a, b){
+            return a[sortByValue.trim()] - b[sortByValue.trim()];
+        };
+    }
+    button.querySelector("i").classList.remove("fa-sort");
+    if (isSorted) {
+        addCustomersToPage(filteredArray.sort(sortFunction).reverse());
+        isSorted = false;
+        button.querySelector("i").classList.remove("fa-sort-down", "desc");
+        button.querySelector("i").classList.add("fa-sort-up", "asc");
+    }else{
+        addCustomersToPage(filteredArray.sort(sortFunction));
+        isSorted = true;
+        button.querySelector("i").classList.remove("fa-sort-up", "asc");
+        button.querySelector("i").classList.add("fa-sort-down", "desc");
+    }
+}
+
+function resetSort(){
+    sortByBtns.forEach(btn =>{
+        btn.querySelector("i").classList.add("fa-sort");
+        btn.querySelector("i").classList.remove("fa-sort-up", "asc", "desc");
+    });
+}
 
 // ------------------------------------------------ PopUp-----------------------------------------------------------
 function createPopUp(buttonType, customer) {
@@ -365,6 +420,7 @@ function createUpdateBtn(popUpForm){
     popUpForm.appendChild(updateBtn);
     updateBtn.addEventListener("click", ()=>{
         updateCustomer(idToUpdate);
+        resetSort()
     })
 }
 // ------------------------------------------------ Customers -----------------------------------------------------------
@@ -419,6 +475,7 @@ function createDeleteSelectedBtn(selectedCustomers, selectedCustomersArray){
    createDeleteSelectedIcon(deleteBtn);
    deleteBtn.addEventListener("click", ()=>{
     deleteSelectedCustomer(selectedCustomersArray);
+    resetSort()
    })
 };
 
@@ -460,10 +517,9 @@ function addCustomerToLocalStorage(customer){
 }
 
 function displayCustomers(){
-    let searchValue = document.querySelector(".search_input").value.trim().toLocaleLowerCase();
     let filteredArray = customersArray.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchValue) || customer.lastName.toLocaleLowerCase().includes(searchValue) || customer.description.toLocaleLowerCase().includes(searchValue));
    addCustomersToPage(filteredArray);
-   updateActiveCustomersNumbers()
+   updateActiveCustomersNumbers();
 }
 
 function addCustomersToPage(filteredArray){
@@ -659,6 +715,7 @@ function createDeleteBtn(actionsHolder){
     createDeleteIcon(deleteBtn);
     deleteBtn.addEventListener("click", ()=>{
         deleteCustomer(actionsHolder.parentElement.getAttribute("data-id"));
+        resetSort()
     });
 }
 

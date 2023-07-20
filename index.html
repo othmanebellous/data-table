@@ -23,17 +23,16 @@
             <thead>
                 <tr>
                     <th class="select_all checkbox"><input type="checkbox" name="" id="" class="select_all_customers"></th>
-                    <th class="sort_by name_heading">name</th>
+                    <th class="name_heading">name <button class="sort_by sort_by_name"><i class="fa-solid fa-sort"></i></button></th>
                     <th class="description">description</th>
-                    <th class="sort_by rate_heading">rate</th>
-                    <th class="sort_by balance_heading">balance</th>
-                    <th class="sort_by deposit_heading">deposit</th>
-                    <th class="sort_by status_heading">status</th>
+                    <th class="rate_heading">rate <button class="sort_by sort_by_rate"><i class="fa-solid fa-sort"></i></button></th>
+                    <th class="balance_heading">balance <button class="sort_by sort_by_balance"><i class="fa-solid fa-sort"></i></button></th>
+                    <th class="deposit_heading">deposit <button class="sort_by sort_by_deposit"><i class="fa-solid fa-sort"></i></button></th>
+                    <th class="status_heading">status <button class="sort_by sort_by_status"><i class="fa-solid fa-sort"></i></button></th>
                     <th class="actions_heading">actions</th>
                 </tr>
             </thead>
             <tbody class="customers_wrapper">
-                <!-- <tr class="customer">
                     <td class="checkbox">
                         <input type="checkbox" name="" id="" class="checkbox_input">
                     </td>
@@ -69,7 +68,7 @@
                         <button class="edit_btn"><i class="fa-solid fa-pen"></i></button>
                         <button class="delete_btn"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
-                </tr> -->
+                </tr>
             </tbody>
         </table>
         <div class="footer">
@@ -98,13 +97,6 @@
                     <option value="15">15</option>
                     <option value="20">20</option>
                 </select>
-            </div>
-            <div class="active_page">
-                <span class="active_page_number">1</span>
-                -
-                <span class="all_pages_number">10</span>
-                of
-                <span class="customer_number">706</span>
             </div>
         </div>
     </main>
