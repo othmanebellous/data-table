@@ -463,6 +463,7 @@ function displayCustomers(){
     let searchValue = document.querySelector(".search_input").value.trim().toLocaleLowerCase();
     let filteredArray = customersArray.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchValue) || customer.lastName.toLocaleLowerCase().includes(searchValue) || customer.description.toLocaleLowerCase().includes(searchValue));
    addCustomersToPage(filteredArray);
+   updateActiveCustomersNumbers()
 }
 
 function addCustomersToPage(filteredArray){
@@ -705,4 +706,9 @@ function updateCustomer(idToUpdate){
     displayCustomers();
     localStorage.setItem("customers", JSON.stringify(customersArray));
     clearCustomerValues();
+}
+
+function updateActiveCustomersNumbers(){
+    document.querySelector(".active_customers_number").textContent = customersArray.filter(customer => customer.status === "active").length;
+    document.querySelector(".all_customers_number").textContent = customersArray.length;
 }
