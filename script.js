@@ -1,5 +1,6 @@
-const addCustomerBtn = document.querySelector(".add_customer_btn");
 const mainElement = document.querySelector("main");
+const header = document.querySelector(".header");
+const addCustomerBtn = document.querySelector(".add_customer_btn");
 const customersWrapper = document.querySelector(".customers_wrapper");
 const selectAllCustomers = document.querySelector(".select_all_customers");
 const searchInput = document.querySelector(".search_input")
@@ -374,16 +375,66 @@ if(localStorage.getItem("customers") && JSON.parse(localStorage.getItem('custome
 }
 
 selectAllCustomers.addEventListener("change",()=>{
-    customersArray.forEach(customer =>{
-        if (selectAllCustomers.checked) {
+    if (selectAllCustomers.checked) {
+        customersArray.forEach(customer =>{
             customer.selected = true;
-        }else{
+        });
+        createCustomersCounter();
+    }else{
+        customersArray.forEach(customer =>{
             customer.selected = false;
+        });
+        if (header.querySelector(".selected_customers")) {
+            header.querySelector(".selected_customers").remove();
         }
-    })
+    }
     displayCustomers();
     localStorage.setItem("customers", JSON.stringify(customersArray));
-})
+});
+
+function createCustomersCounter(){
+    let selectedCustomersArray = customersArray.filter(customer => customer.selected);
+    if (header.querySelector(".selected_customers")) {
+        header.querySelector(".selected_customers_span").textContent = `${selectedCustomersArray.length} selected`;
+    }else{
+        let selectedCustomers = document.createElement("div");
+        selectedCustomers.className ="selected_customers";
+        header.insertBefore(selectedCustomers, header.children[0]);
+        createSelectedNumerSpan(selectedCustomers, selectedCustomersArray)
+        createDeleteSelectedBtn(selectedCustomers, selectedCustomersArray);
+    }
+}
+
+function createSelectedNumerSpan(selectedCustomers, selectedCustomersArray){
+    const selectedNumerSpan = document.createElement("span");
+    selectedNumerSpan.className ="selected_customers_span";
+    selectedNumerSpan.textContent = `${selectedCustomersArray.length} selected`;
+    selectedCustomers.appendChild(selectedNumerSpan);
+}
+
+function createDeleteSelectedBtn(selectedCustomers, selectedCustomersArray){
+    let deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delete_selected_btn");
+   selectedCustomers.appendChild(deleteBtn);
+   createDeleteSelectedIcon(deleteBtn);
+   deleteBtn.addEventListener("click", ()=>{
+    deleteSelectedCustomer(selectedCustomersArray);
+   })
+};
+
+function deleteSelectedCustomer(selectedCustomersArray){
+    selectedCustomersArray.forEach(selectedCustomer =>{
+        deleteCustomer(selectedCustomer.id);
+    })
+    header.querySelector(".selected_customers").remove()
+    selectAllCustomers.checked = false;
+};
+
+function createDeleteSelectedIcon(deleteBtn){
+    let deleteIcon = document.createElement("i");
+   deleteIcon.classList.add("fa-solid", "fa-trash");
+   deleteBtn.appendChild(deleteIcon);
+}
 
 function createNewCustomer(){
     let customer = {
@@ -461,8 +512,15 @@ function createCheckBoxInput(checkBoxHolder, customer){
     checkBoxInput.addEventListener("change", ()=>{
         if (checkBoxInput.checked) {
             customer.selected = true;
+            createCustomersCounter();
         }else{
             customer.selected = false;
+            if (customersArray.filter(customer => customer.selected).length !== 0) {
+                header.querySelector(".selected_customers_span").textContent = `${customersArray.filter(customer => customer.selected).length} selected`;
+            }else{
+                header.querySelector(".selected_customers").remove();
+                selectAllCustomers.checked = false;
+            }
         }
         displayCustomers();
         //update local storage
@@ -604,11 +662,12 @@ function createDeleteBtn(actionsHolder){
 }
 
 function deleteCustomer(id){
-    if (confirm("Are you sure you want to delete this customer?")) {
         customersArray = customersArray.filter(customer => customer.id != id);
         displayCustomers();
         localStorage.setItem("customers", JSON.stringify(customersArray));
-    }
+        if (selectAllCustomers.checked) {
+            header.querySelector(".selected_customers_span").textContent = `${customersArray.filter(customer => customer.selected).length} selected`;
+        }
 }
 
 function createDeleteIcon(deleteBtn){
