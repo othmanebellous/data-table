@@ -178,7 +178,7 @@ th, td {
   text-align: right;
 }
 
-.rate, .balance, .diposit {
+.rate, .balance, .deposit {
   display: block;
   width: -moz-fit-content;
   width: fit-content;

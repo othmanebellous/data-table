@@ -7,7 +7,7 @@ const searchInput = document.querySelector(".search_input");
 const sortByBtns = document.querySelectorAll(".sort_by");
 let customersArray = [];
 let idToUpdate;
-let firstName, lastName, description, rate, balance, diposit, accountStatus = "active", currency = "mad";
+let firstName, lastName, description, rate, balance, deposit, accountStatus = "active", currency = "mad";
 
 
 addCustomerBtn.addEventListener("click", ()=>{
@@ -261,8 +261,8 @@ function createDipositHolder(inputsHolder, customer){
 
 function createDipositLabel(dipositHolder){
     const dipositLabel = document.createElement("label");
-    dipositLabel.setAttribute("for", "diposit");
-    dipositLabel.textContent = "Diposit";
+    dipositLabel.setAttribute("for", "deposit");
+    dipositLabel.textContent = "Deposit";
     dipositHolder.appendChild(dipositLabel);
 }
 
@@ -272,12 +272,12 @@ function createDipositInput(dipositHolder, customer){
     dipositInput.setAttribute("type", "number");
     dipositInput.className= "pop_up_input";
     if (customer) {
-        dipositInput.value = customer.diposit;
-        diposit = customer.diposit;
+        dipositInput.value = customer.deposit;
+        deposit = customer.deposit;
     }
     dipositHolder.appendChild(dipositInput);
     dipositInput.addEventListener("change",()=>{
-        diposit = dipositInput.value.trim();
+        deposit = dipositInput.value.trim();
     });
 }
 
@@ -396,7 +396,7 @@ function createAddBtn(popUpForm){
     addBtn.textContent = "Add";
     popUpForm.appendChild(addBtn);
     addBtn.addEventListener("click", ()=>{
-        if (firstName && lastName && description && rate && balance && diposit && accountStatus && currency) {
+        if (firstName && lastName && description && rate && balance && deposit && accountStatus && currency) {
             createNewCustomer();
         }
     })
@@ -501,7 +501,7 @@ function createNewCustomer(){
         description: description,
         rate: rate,
         balance: balance,
-        diposit: diposit,
+        deposit: deposit,
         status: accountStatus,
         currency: currency,
         selected: false,
@@ -662,8 +662,8 @@ function createCustomerDiposit(customerRow, customer){
 
 function createDipositSpan(customerDipositHolder, customer){
     const customerDiposit = document.createElement("span");
-    customerDiposit.className ="diposit";
-    customerDiposit.textContent = Number(customer.diposit).toFixed(2);
+    customerDiposit.className ="deposit";
+    customerDiposit.textContent = Number(customer.deposit).toFixed(2);
     customerDipositHolder.appendChild(customerDiposit);
     createCurrencySpan(customerDiposit, customer);
 }
@@ -741,7 +741,7 @@ function clearCustomerValues(){
     });
     //reset variables
     firstName = ""; lastName = ""; description = ""; rate = 0;
-    balance = 0; diposit = 0; accountStatus = "active", currency="mad";
+    balance = 0; deposit = 0; accountStatus = "active", currency="mad";
     //reset account status
     document.querySelector(".pop_up_status").value = accountStatus;
     closePopUp(document.querySelector(".pop_up"));
@@ -755,7 +755,7 @@ function updateCustomer(idToUpdate){
             customer.description= description;
             customer.rate= rate;
             customer.balance= balance;
-            customer.diposit= diposit;
+            customer.deposit= deposit;
             customer.status= accountStatus;
             customer.currency= currency;
         }
