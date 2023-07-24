@@ -3,6 +3,7 @@ const header = document.querySelector(".header");
 const addCustomerBtn = document.querySelector(".add_customer_btn");
 const customersWrapper = document.querySelector(".customers_wrapper");
 const searchInput = document.querySelector(".search_input");
+const selectAllBtn = document.querySelector(".select_all_customers");
 const sortByBtns = document.querySelectorAll(".sort_by");
 let customersArray = [];
 let filteredArray;
@@ -11,16 +12,75 @@ let firstName, lastName, description, rate, balance, deposit, accountStatus = "a
 
 
 addCustomerBtn.addEventListener("click", ()=>{
-    document.body.classList.add("overlay");
-        createPopUp("add");
+    createPopUp("add");
 });
 // ------------------------------------------------ Search -----------------------------------------------------------
 
 searchInput.addEventListener("input", ()=>{
     displayCustomers();
+    checkForSelectedCustomers();
 });
 
-// ------------------------------------------------ Sort-----------------------------------------------------------
+//-------------------------------------------------Select Customers ----------------------------------------------------
+selectAllBtn.addEventListener("click", ()=>{
+    if (filteredArray.every(customer => customer.selected) || filteredArray.some(customer => customer.selected)) {
+        filteredArray.forEach(customer => {
+            customer.selected = false;
+            customersArray.forEach(orignalCustomer =>{
+                if(customer.id === orignalCustomer.id){
+                    orignalCustomer.selected = customer.selected;
+                }
+            });
+            resetSelectAllBtn();
+        });
+        displayCustomers();
+    }else if (filteredArray.every(customer => !customer.selected)) {
+        addIcon("check");
+        selectAllBtn.classList.add("isSelected");
+        filteredArray.forEach(customer => {
+            customer.selected = true;
+            customersArray.forEach(orignalCustomer =>{
+                if(customer.id === orignalCustomer.id){
+                    orignalCustomer.selected = customer.selected;
+                }
+            })
+        });
+        displayCustomers();
+    }else{
+
+    }
+});
+
+function checkForSelectedCustomers(){
+    if (filteredArray.every(customer => customer.selected)) {
+        selectAllBtn.innerHTML="";
+        addIcon("check");
+        selectAllBtn.classList.add("isSelected");
+    }else if (filteredArray.some(customer => customer.selected)) {
+        selectAllBtn.innerHTML="";
+        addIcon("minus");
+        selectAllBtn.classList.add("isSelected");
+    }else{
+        resetSelectAllBtn();
+    }
+};
+
+function addIcon(iconType){
+    const icon =document.createElement("i");
+    icon.className="fa-solid";
+    if(iconType === "minus"){
+        icon.classList.add("fa-minus");
+    }else{
+        icon.classList.add("fa-check");
+    }
+    selectAllBtn.appendChild(icon);
+};
+
+function resetSelectAllBtn(){
+    selectAllBtn.innerHTML ="";
+    selectAllBtn.classList.remove("isSelected");
+};
+// ------------------------------------------------ Sort----------------------------------------------------------------
 let isSorted = false;
 sortByBtns.forEach(button =>{
     button.addEventListener("click", ()=>{
@@ -88,6 +148,7 @@ function createPopUp(buttonType, customer) {
     }else{
         createUpdateBtn(popUpForm);
     }
+    document.body.classList.add("overlay");
 }
 
 function createFirstNameHolder(popUpForm, customer){
@@ -389,7 +450,7 @@ function closePopUp(popUpForm){
 
 function createAddBtn(popUpForm){
     const addBtn = document.createElement("button");
-    addBtn.className = "add_btn";
+    addBtn.classList.add("add_btn", "blue_btn");
     addBtn.setAttribute("type", "submit");
     addBtn.textContent = "Add";
     popUpForm.appendChild(addBtn);
@@ -403,7 +464,7 @@ function createAddBtn(popUpForm){
 
 function createResetBtn(popUpForm){
     const resetBtn = document.createElement("button");
-    resetBtn.className = "reset_btn";
+    resetBtn.classList.add("reset_btn", "blue_btn");
     resetBtn.textContent = "Reset";
     popUpForm.appendChild(resetBtn);
     resetBtn.addEventListener("click", ()=>{
@@ -413,7 +474,7 @@ function createResetBtn(popUpForm){
 
 function createUpdateBtn(popUpForm){
     const updateBtn = document.createElement("button");
-    updateBtn.className = "update_btn";
+    updateBtn.classList.add("update_btn", "blue_btn");
     updateBtn.setAttribute("type", "submit");
     updateBtn.textContent = "Update";
     popUpForm.appendChild(updateBtn);
@@ -426,6 +487,7 @@ function createUpdateBtn(popUpForm){
 
 if(localStorage.getItem("customers") && JSON.parse(localStorage.getItem('customers')).length !== 0){
     customersArray = JSON.parse(localStorage.getItem("customers"));
+    customersArray.forEach(customer=> customer.selected = false)
     displayCustomers();
 }else{
     customersArray= [{ id: 1690115452012, firstName: "Othmane", lastName: "Bellous", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "4", balance: "7", deposit: "5", status: "active", currency: "mad", selected: false },{ id: 1690115452012, firstName: "Matthew", lastName: "Schreck", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "20", balance: "30", deposit: "100", status: "inactive", currency: "usd", selected: false },{ id: 1690115452012, firstName: "David", lastName: "Henry", description: "aa", rate: "4", balance: "7", deposit: "5", status: "active", currency: "euro", selected: false },{ id: 1690115452012, firstName: "Robert", lastName: "Davis", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "14", balance: "17", deposit: "500", status: "active", currency: "euro", selected: false },{ id: 1690115452012, firstName: "Howis", lastName: "Hamilton", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "44", balance: "777", deposit: "390", status: "active", currency: "euro", selected: false }]
@@ -515,6 +577,7 @@ function createCheckBoxInput(checkBoxHolder, customer){
         }else{
             customer.selected = false;
         }
+        checkForSelectedCustomers();
         displayCustomers();
         //update local storage
         localStorage.setItem("customers", JSON.stringify(customersArray));
@@ -614,8 +677,10 @@ function createStatusSpan(customerStatusHolder, customer){
     const customerStatus = document.createElement("span");
     if (customer.status === "active") {
         customerStatus.classList.add("status", "active");
+        customerStatus.textContent="active";
     }else{
         customerStatus.classList.add("status", "inactive");
+        customerStatus.textContent="inactive";
     }
     customerStatusHolder.appendChild(customerStatus);
 }
@@ -650,10 +715,49 @@ function createDeleteBtn(actionsHolder){
     actionsHolder.appendChild(deleteBtn);
     createDeleteIcon(deleteBtn);
     deleteBtn.addEventListener("click", ()=>{
-        deleteCustomer(actionsHolder.parentElement.getAttribute("data-id"));
+        createConfirmPopUP(actionsHolder.parentElement.getAttribute("data-id"));
         resetSort()
     });
-}
+};
+
+function createConfirmPopUP(id){
+    const confirmDoalog = document.createElement("dialog");
+    confirmDoalog.className ="confirm_dialog";
+    confirmDoalog.textContent="Are you sure you want to delete this customer?";
+    document.body.appendChild(confirmDoalog);
+    createConfirmButtons(confirmDoalog, id);
+    document.body.classList.add("overlay");
+};
+
+function createConfirmButtons(confirmDoalog, id){
+    const confirmButtons = document.createElement("div");
+    confirmDoalog.appendChild(confirmButtons);
+    createConfirmOkBtn(confirmButtons, confirmDoalog, id);
+    createConfirmCancelBtn(confirmButtons, confirmDoalog);
+};
+
+function createConfirmOkBtn(confirmButtons, confirmDoalog, id){
+    const confirmOkBtn = document.createElement("button");
+    confirmOkBtn.classList.add("confirm_ok", "blue_btn");
+    confirmOkBtn.textContent="Ok";
+    confirmButtons.appendChild(confirmOkBtn);
+    confirmOkBtn.addEventListener("click", ()=>{
+        deleteCustomer(id);
+        confirmDoalog.remove();
+        document.body.classList.remove("overlay");
+    })
+};
+
+function createConfirmCancelBtn(confirmButtons, confirmDoalog){
+    const confirmCancelBtn = document.createElement("button");
+    confirmCancelBtn.classList.add("confirm_cancel", "blue_btn");
+    confirmCancelBtn.textContent="Cancel";
+    confirmButtons.appendChild(confirmCancelBtn);
+    confirmCancelBtn.addEventListener("click", ()=>{
+        confirmDoalog.remove();
+        document.body.classList.remove("overlay");
+    })
+};
 
 function deleteCustomer(id){
         customersArray = customersArray.filter(customer => customer.id != id);

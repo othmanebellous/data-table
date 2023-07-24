@@ -11,7 +11,7 @@ body {
   position: relative;
   font-family: "Inter", sans-serif;
   background-color: #DAE1EC;
-  height: 100vh;
+  height: 100%;
 }
 body.overlay::after {
   content: "";
@@ -33,7 +33,7 @@ a {
 }
 
 input, textarea {
-  font-family: "Inter", sans-serif;
+  font-family: inherit;
   outline: none;
   border: none;
   border-radius: 4px;
@@ -49,6 +49,7 @@ label {
 button {
   border: none;
   transition: 0.3s ease-in-out;
+  font-family: inherit;
 }
 
 button, input[type=checkbox] {
@@ -147,6 +148,24 @@ th, td {
   height: 20px;
 }
 
+.select_all_customers {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #8f8f9d;
+  background: transparent;
+  border-radius: 2px;
+}
+.select_all_customers.isSelected {
+  border-color: #0060df;
+  background-color: #0060df;
+  border-radius: 2px;
+  color: #FFFFFF;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .select_all {
   text-align: left;
 }
@@ -205,20 +224,14 @@ th, td {
   font-weight: 500;
   letter-spacing: 0.5px;
   border-radius: 11px;
-  padding: 4px 5px;
+  padding: 5px 6px;
 }
 .status.active {
   background-color: #0A65FF;
   color: #FFFFFF;
 }
-.status.active::before {
-  content: "active";
-}
 .status.inactive {
   border: 1px solid #606F89;
-}
-.status.inactive:before {
-  content: "inactive";
 }
 
 .delete_btn, .edit_btn {
@@ -328,7 +341,6 @@ th, td {
   margin: 0 5px;
   transition: 0.3s ease-in-out;
   background-color: white;
-  font-family: inherit;
 }
 .pagination_btn:not(.disabled):hover, .pagination_btn.active, .pagination_btn_prev:not(.disabled):hover, .pagination_btn_prev.active, .pagination_btn_next:not(.disabled):hover, .pagination_btn_next.active {
   background-color: #0A65FF;
@@ -342,20 +354,22 @@ th, td {
   cursor: no-drop;
 }
 
-.pop_up {
+.pop_up, .confirm_dialog {
   position: fixed;
-  width: 40%;
   background-color: #FFFFFF;
   border-radius: 5px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   padding: 40px 15px 15px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  transition: 0.5s ease-in-out;
   z-index: 99;
+}
+
+.pop_up {
+  width: 40%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .first_name_holder {
@@ -406,7 +420,7 @@ th, td {
   border-radius: 4px;
 }
 
-.add_btn, .reset_btn, .update_btn {
+.blue_btn {
   grid-area: 4;
   font-size: 16px;
   border-radius: 4px;
@@ -414,7 +428,7 @@ th, td {
   color: white;
   background: #0A65FF;
 }
-.add_btn:hover, .reset_btn:hover, .update_btn:hover {
+.blue_btn:hover {
   background: #0C53CA;
 }
 
@@ -433,12 +447,25 @@ th, td {
   font-weight: 600;
 }
 
-.delete_selected_btn {
-  width: 40px;
-  height: 30px;
-  border-radius: 6px;
-  background: white;
-  border: 1px solid #E01A1A;
-  color: #E01A1A;
-  margin: 0 10px 0 5px;
+.confirm_dialog {
+  width: 35%;
+  border: none;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  gap: 24px;
+  color: #2E3B52;
+}
+
+.confirm_ok, .confirm_cancel {
+  padding: 0 10px;
+}
+
+.confirm_cancel {
+  background-color: darkgray;
+  margin-left: 5px;
+}
+.confirm_cancel:hover {
+  background: #868686;
 }/*# sourceMappingURL=style.css.map */
