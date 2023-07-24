@@ -8,13 +8,21 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   font-family: "Inter", sans-serif;
-  height: 100vh;
   background-color: #DAE1EC;
+  height: 100vh;
+}
+body.overlay::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10;
 }
 
 main {
-  position: relative;
   width: 90%;
   background-color: #FFFFFF;
   border-radius: 5px;
@@ -303,22 +311,26 @@ th, td {
 
 .pagination {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .pagination .pagination_list {
   display: flex;
   align-items: center;
   justify-content: center;
-  list-style: none;
 }
 
-.pagination_link, .pagination_link_prev, .pagination_link_next {
+.pagination_btn, .pagination_btn_prev, .pagination_btn_next {
   color: #606F89;
   border: 1px solid rgba(96, 111, 137, 0.5);
   padding: 5px 8px;
   margin: 0 5px;
   transition: 0.3s ease-in-out;
+  background-color: white;
+  font-family: inherit;
 }
-.pagination_link:not(.disabled):hover, .pagination_link.active, .pagination_link_prev:not(.disabled):hover, .pagination_link_prev.active, .pagination_link_next:not(.disabled):hover, .pagination_link_next.active {
+.pagination_btn:not(.disabled):hover, .pagination_btn.active, .pagination_btn_prev:not(.disabled):hover, .pagination_btn_prev.active, .pagination_btn_next:not(.disabled):hover, .pagination_btn_next.active {
   background-color: #0A65FF;
   color: white;
   border-color: #0A65FF;
@@ -331,7 +343,7 @@ th, td {
 }
 
 .pop_up {
-  position: absolute;
+  position: fixed;
   width: 40%;
   background-color: #FFFFFF;
   border-radius: 5px;
@@ -343,6 +355,7 @@ th, td {
   padding: 40px 15px 15px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   transition: 0.5s ease-in-out;
+  z-index: 99;
 }
 
 .first_name_holder {

@@ -9,13 +9,21 @@
 
 body{
     @include flexCenter;
+    position: relative;
     font-family: 'Inter', sans-serif;
-    height: 100vh;
     background-color: #DAE1EC;
+    height: 100vh;
+    &.overlay::after{
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+        z-index: 10;
+    }
 }
 
 main{
-    position: relative;
     width: 90%;
     background-color: #FFFFFF;
     border-radius: 5px;
@@ -303,18 +311,20 @@ th,td{
 
 .pagination{
     flex: 1;
+    @include flexCenter;
     .pagination_list{
         @include flexCenter;
-        list-style: none;
     }
 }
 
-.pagination_link, .pagination_link_prev, .pagination_link_next{
+.pagination_btn, .pagination_btn_prev, .pagination_btn_next{
     color: $secondaryColor;
     border: 1px solid rgba(96, 111, 137, 0.5);
     padding: 5px 8px;
     margin: 0 5px;
     transition: 0.3s ease-in-out;
+    background-color: white;
+    font-family: inherit;
     &:not(.disabled):hover, &.active{
         background-color: $primaryColor;
         color: white;
@@ -329,7 +339,7 @@ th,td{
 }
 
 .pop_up{
-    position: absolute;
+    position: fixed;
     width: 40%;
     background-color: #FFFFFF;
     border-radius: 5px;
@@ -341,6 +351,7 @@ th,td{
     padding: 40px 15px 15px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     transition: 0.5s ease-in-out;
+    z-index: 99;
 }
 
 .first_name_holder{

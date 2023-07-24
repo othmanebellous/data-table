@@ -2,23 +2,21 @@ const mainElement = document.querySelector("main");
 const header = document.querySelector(".header");
 const addCustomerBtn = document.querySelector(".add_customer_btn");
 const customersWrapper = document.querySelector(".customers_wrapper");
-const selectAllCustomers = document.querySelector(".select_all_customers");
 const searchInput = document.querySelector(".search_input");
 const sortByBtns = document.querySelectorAll(".sort_by");
 let customersArray = [];
+let filteredArray;
 let idToUpdate;
 let firstName, lastName, description, rate, balance, deposit, accountStatus = "active", currency = "mad";
 
 
 addCustomerBtn.addEventListener("click", ()=>{
-    if(!mainElement.querySelector(".pop_up")){
+    document.body.classList.add("overlay");
         createPopUp("add");
-    }
 });
 // ------------------------------------------------ Search -----------------------------------------------------------
-let searchValue ="";
+
 searchInput.addEventListener("input", ()=>{
-    searchValue = searchInput.value.trim().toLocaleLowerCase();
     displayCustomers();
 });
 
@@ -27,13 +25,12 @@ let isSorted = false;
 sortByBtns.forEach(button =>{
     button.addEventListener("click", ()=>{
         resetSort();
-        let filteredArray = customersArray.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchValue) || customer.lastName.toLocaleLowerCase().includes(searchValue) || customer.description.toLocaleLowerCase().includes(searchValue));
-        sortCustomers(button, filteredArray);
+        sortCustomers(button);
         updateActiveCustomersNumbers();
     })
 });
 
-function sortCustomers(button, filteredArray){
+function sortCustomers(button){
     let sortFunction;
     if (button.classList.contains("sort_by_name")) {
         sortFunction = function(a, b){
@@ -387,6 +384,7 @@ function createCancelBtn(popUpForm){
 
 function closePopUp(popUpForm){
     popUpForm.remove();
+    document.body.classList.remove("overlay")
 }
 
 function createAddBtn(popUpForm){
@@ -399,6 +397,7 @@ function createAddBtn(popUpForm){
         if (firstName && lastName && description && rate && balance && deposit && accountStatus && currency) {
             createNewCustomer();
         }
+        closePopUp(popUpForm);
     })
 }
 
@@ -428,70 +427,13 @@ function createUpdateBtn(popUpForm){
 if(localStorage.getItem("customers") && JSON.parse(localStorage.getItem('customers')).length !== 0){
     customersArray = JSON.parse(localStorage.getItem("customers"));
     displayCustomers();
-}
-
-selectAllCustomers.addEventListener("change",()=>{
-    if (selectAllCustomers.checked) {
-        customersArray.forEach(customer =>{
-            customer.selected = true;
-        });
-        createCustomersCounter();
-    }else{
-        customersArray.forEach(customer =>{
-            customer.selected = false;
-        });
-        if (header.querySelector(".selected_customers")) {
-            header.querySelector(".selected_customers").remove();
-        }
-    }
-    displayCustomers();
+}else{
+    customersArray= [{ id: 1690115452012, firstName: "Othmane", lastName: "Bellous", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "4", balance: "7", deposit: "5", status: "active", currency: "mad", selected: false },{ id: 1690115452012, firstName: "Matthew", lastName: "Schreck", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "20", balance: "30", deposit: "100", status: "inactive", currency: "usd", selected: false },{ id: 1690115452012, firstName: "David", lastName: "Henry", description: "aa", rate: "4", balance: "7", deposit: "5", status: "active", currency: "euro", selected: false },{ id: 1690115452012, firstName: "Robert", lastName: "Davis", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "14", balance: "17", deposit: "500", status: "active", currency: "euro", selected: false },{ id: 1690115452012, firstName: "Howis", lastName: "Hamilton", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "44", balance: "777", deposit: "390", status: "active", currency: "euro", selected: false }]
     localStorage.setItem("customers", JSON.stringify(customersArray));
-});
-
-function createCustomersCounter(){
-    let selectedCustomersArray = customersArray.filter(customer => customer.selected);
-    if (header.querySelector(".selected_customers")) {
-        header.querySelector(".selected_customers_span").textContent = `${selectedCustomersArray.length} selected`;
-    }else{
-        let selectedCustomers = document.createElement("div");
-        selectedCustomers.className ="selected_customers";
-        header.insertBefore(selectedCustomers, header.children[0]);
-        createSelectedNumerSpan(selectedCustomers, selectedCustomersArray)
-        createDeleteSelectedBtn(selectedCustomers, selectedCustomersArray);
-    }
+    displayCustomers();
 }
 
-function createSelectedNumerSpan(selectedCustomers, selectedCustomersArray){
-    const selectedNumerSpan = document.createElement("span");
-    selectedNumerSpan.className ="selected_customers_span";
-    selectedNumerSpan.textContent = `${selectedCustomersArray.length} selected`;
-    selectedCustomers.appendChild(selectedNumerSpan);
-}
 
-function createDeleteSelectedBtn(selectedCustomers, selectedCustomersArray){
-    let deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("delete_selected_btn");
-   selectedCustomers.appendChild(deleteBtn);
-   createDeleteSelectedIcon(deleteBtn);
-   deleteBtn.addEventListener("click", ()=>{
-    deleteSelectedCustomer(selectedCustomersArray);
-    resetSort()
-   })
-};
-
-function deleteSelectedCustomer(selectedCustomersArray){
-    selectedCustomersArray.forEach(selectedCustomer =>{
-        deleteCustomer(selectedCustomer.id);
-    })
-    header.querySelector(".selected_customers").remove()
-    selectAllCustomers.checked = false;
-};
-
-function createDeleteSelectedIcon(deleteBtn){
-    let deleteIcon = document.createElement("i");
-   deleteIcon.classList.add("fa-solid", "fa-trash");
-   deleteBtn.appendChild(deleteIcon);
-}
 
 function createNewCustomer(){
     let customer = {
@@ -517,12 +459,13 @@ function addCustomerToLocalStorage(customer){
 }
 
 function displayCustomers(){
-    let filteredArray = customersArray.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchValue) || customer.lastName.toLocaleLowerCase().includes(searchValue) || customer.description.toLocaleLowerCase().includes(searchValue));
-   addCustomersToPage(filteredArray);
+    let searchValue = searchInput.value.trim().toLocaleLowerCase();
+    filteredArray = customersArray.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchValue) || customer.lastName.toLocaleLowerCase().includes(searchValue) || customer.description.toLocaleLowerCase().includes(searchValue));
+   addCustomersToPage();
    updateActiveCustomersNumbers();
 }
 
-function addCustomersToPage(filteredArray){
+function addCustomersToPage(){
     customersWrapper.innerHTML = "";
     filteredArray.forEach(customer =>{
         createCustomerRow(customer);
@@ -569,15 +512,8 @@ function createCheckBoxInput(checkBoxHolder, customer){
     checkBoxInput.addEventListener("change", ()=>{
         if (checkBoxInput.checked) {
             customer.selected = true;
-            createCustomersCounter();
         }else{
             customer.selected = false;
-            if (customersArray.filter(customer => customer.selected).length !== 0) {
-                header.querySelector(".selected_customers_span").textContent = `${customersArray.filter(customer => customer.selected).length} selected`;
-            }else{
-                header.querySelector(".selected_customers").remove();
-                selectAllCustomers.checked = false;
-            }
         }
         displayCustomers();
         //update local storage
@@ -723,9 +659,6 @@ function deleteCustomer(id){
         customersArray = customersArray.filter(customer => customer.id != id);
         displayCustomers();
         localStorage.setItem("customers", JSON.stringify(customersArray));
-        if (selectAllCustomers.checked) {
-            header.querySelector(".selected_customers_span").textContent = `${customersArray.filter(customer => customer.selected).length} selected`;
-        }
 }
 
 function createDeleteIcon(deleteBtn){
@@ -742,9 +675,8 @@ function clearCustomerValues(){
     //reset variables
     firstName = ""; lastName = ""; description = ""; rate = 0;
     balance = 0; deposit = 0; accountStatus = "active", currency="mad";
-    //reset account status
     document.querySelector(".pop_up_status").value = accountStatus;
-    closePopUp(document.querySelector(".pop_up"));
+    document.querySelector(".pop_up_currency").value = currency;
 }
 
 function updateCustomer(idToUpdate){
@@ -766,6 +698,6 @@ function updateCustomer(idToUpdate){
 }
 
 function updateActiveCustomersNumbers(){
-    document.querySelector(".active_customers_number").textContent = customersArray.filter(customer => customer.status === "active").length;
-    document.querySelector(".all_customers_number").textContent = customersArray.length;
+    document.querySelector(".active_customers_number").textContent = filteredArray.filter(customer => customer.status === "active").length;
+    document.querySelector(".all_customers_number").textContent = filteredArray.length;
 }
