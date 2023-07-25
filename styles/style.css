@@ -61,10 +61,11 @@ tr:nth-child(even) {
 }
 
 th {
+  position: relative;
   text-transform: uppercase;
   font-weight: 600;
   color: #606F89;
-  font-size: 12px;
+  font-size: 13px;
   text-align: left;
 }
 
@@ -171,23 +172,47 @@ th, td {
   text-align: left;
 }
 
+.sort_holder {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  position: absolute;
+  margin: 1px 0 0 5px;
+}
+
 .sort_by {
   cursor: pointer;
   font-size: 14px;
   color: #7D90B2;
-  margin-left: 5px;
   background-color: transparent;
   border: none;
-}
-.sort_by .asc, .sort_by .desc {
-  color: #000000;
   position: relative;
+  width: 11px;
+  height: 7px;
 }
-.sort_by .asc {
-  top: 3px;
+
+.sort_asc::before {
+  content: "";
+  border: 6px solid;
+  border-color: transparent transparent #606F89 transparent;
+  position: absolute;
+  top: -6px;
+  left: 0;
 }
-.sort_by .desc {
-  bottom: 3px;
+.sort_asc.sorted::before {
+  border-color: transparent transparent #000000 transparent;
+}
+
+.sort_desc::before {
+  content: "";
+  border: 6px solid;
+  border-color: #606F89 transparent transparent transparent;
+  position: absolute;
+  top: 1px;
+  left: 0;
+}
+.sort_desc.sorted::before {
+  border-color: #000000 transparent transparent transparent;
 }
 
 .customer_name {

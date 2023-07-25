@@ -23,12 +23,18 @@
             <thead>
                 <tr>
                     <th class="select_all checkbox"><button class="select_all_customers"></button></th>
-                    <th class="name_heading">name <button class="sort_by sort_by_name"><i class="fa-solid fa-sort"></i></button></th>
+                    <th class="name_heading">
+                        name 
+                        <div class="sort_holder">
+                            <button class="sort_by sort_asc sort_by_name"></button>
+                            <button class="sort_by sort_desc sort_by_name"></button>
+                        </div>
+                    </th>
                     <th class="description">description</th>
-                    <th class="rate_heading">rate <button class="sort_by sort_by_rate"><i class="fa-solid fa-sort"></i></button></th>
-                    <th class="balance_heading">balance <button class="sort_by sort_by_balance"><i class="fa-solid fa-sort"></i></button></th>
-                    <th class="deposit_heading">deposit <button class="sort_by sort_by_deposit"><i class="fa-solid fa-sort"></i></button></th>
-                    <th class="status_heading">status <button class="sort_by sort_by_status"><i class="fa-solid fa-sort"></i></button></th>
+                    <th class="rate_heading">rate <div class="sort_holder"><button class="sort_by sort_asc sort_by_rate"></button><button class="sort_by sort_desc sort_by_rate"></button></div></th>
+                    <th class="balance_heading">balance <div class="sort_holder"><button class="sort_by sort_asc sort_by_balance"></button><button class="sort_by sort_desc sort_by_balance"></button></div></th>
+                    <th class="deposit_heading">deposit <div class="sort_holder"><button class="sort_by sort_asc sort_by_deposit"></button><button class="sort_by sort_desc sort_by_deposit"></button></div></th>
+                    <th class="status_heading">status <div class="sort_holder"><button class="sort_by sort_asc sort_by_status"></button><button class="sort_by sort_desc sort_by_status"></button></div></th>
                     <th class="actions_heading">actions</th>
                 </tr>
             </thead>

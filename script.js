@@ -5,8 +5,11 @@ const customersWrapper = document.querySelector(".customers_wrapper");
 const searchInput = document.querySelector(".search_input");
 const selectAllBtn = document.querySelector(".select_all_customers");
 const sortByBtns = document.querySelectorAll(".sort_by");
+const ascSortBtns = document.querySelectorAll(".sort_asc");
+const descSortBtns = document.querySelectorAll(".sort_desc");
 let customersArray = [];
 let filteredArray;
+let sortFunction;
 let idToUpdate;
 let firstName, lastName, description, rate, balance, deposit, accountStatus = "active", currency = "mad";
 
@@ -19,6 +22,8 @@ addCustomerBtn.addEventListener("click", ()=>{
 searchInput.addEventListener("input", ()=>{
     displayCustomers();
     checkForSelectedCustomers();
+    sortByBtns.forEach(btn => btn.classList.remove("sorted"));
+    resetSortVariables();
 });
 
 //-------------------------------------------------Select Customers ----------------------------------------------------
@@ -53,9 +58,11 @@ selectAllBtn.addEventListener("click", ()=>{
 
 function checkForSelectedCustomers(){
     if (filteredArray.every(customer => customer.selected)) {
-        selectAllBtn.innerHTML="";
+        if (filteredArray.length !== 0) {
+            selectAllBtn.innerHTML="";
         addIcon("check");
         selectAllBtn.classList.add("isSelected");
+        }
     }else if (filteredArray.some(customer => customer.selected)) {
         selectAllBtn.innerHTML="";
         addIcon("minus");
@@ -81,56 +88,209 @@ function resetSelectAllBtn(){
     selectAllBtn.classList.remove("isSelected");
 };
 // ------------------------------------------------ Sort----------------------------------------------------------------
-let isSorted = false;
-sortByBtns.forEach(button =>{
-    button.addEventListener("click", ()=>{
-        resetSort();
-        sortCustomers(button);
-        updateActiveCustomersNumbers();
+//Sort by ascending order
+let isNameAscSorted = isRateAscSorted = isBalanceAscSorted = isDepositAscSorted = isStatusAscSorted = false;
+ascSortBtns.forEach(btn =>{
+    btn.addEventListener("click", ()=>{
+        sortByBtns.forEach(btn => btn.classList.remove("sorted")); 
+        if (btn.classList.contains("sort_by_name")) {
+           sortNamesAscendingly(btn); 
+           isRateAscSorted = isBalanceAscSorted = isDepositAscSorted = isStatusAscSorted = false;
+           isNameDescSorted = isRateDescSorted = isBalanceDescSorted = isDepositDescSorted = isStatusDescSorted = false;
+        }else if(btn.classList.contains("sort_by_rate")){
+            sortRatesAscendingly(btn);
+            isNameAscSorted = isBalanceAscSorted = isDepositAscSorted = isStatusAscSorted = false;
+            isRateDescSorted = isNameDescSorted = isBalanceDescSorted = isDepositDescSorted = isStatusDescSorted = false;
+        }else if(btn.classList.contains("sort_by_balance")){
+            sortBalancesAscendingly(btn);
+            isNameAscSorted = isRateAscSorted = isDepositAscSorted = isStatusAscSorted = false;
+            isBalanceDescSorted = isNameDescSorted = isRateDescSorted = isDepositDescSorted = isStatusDescSorted = false;
+        }else if(btn.classList.contains("sort_by_deposit")){
+            sortDepositAscendingly(btn);
+            isNameAscSorted = isRateAscSorted = isBalanceAscSorted = isStatusAscSorted = false;
+            isDepositDescSorted = isNameDescSorted = isRateDescSorted = isBalanceDescSorted = isStatusDescSorted = false;
+        }else if(btn.classList.contains("sort_by_status")){
+            sortStatusAscendingly(btn);
+            isNameAscSorted = isRateAscSorted = isBalanceAscSorted = isDepositAscSorted = false;
+            isStatusDescSorted = isNameDescSorted = isRateDescSorted = isBalanceDescSorted = isDepositDescSorted = false;
+        }
     })
 });
 
-function sortCustomers(button){
-    let sortFunction;
-    if (button.classList.contains("sort_by_name")) {
+function sortNamesAscendingly(btn){
+    if(!isNameAscSorted){
+        btn.classList.add("sorted");
         sortFunction = function(a, b){
             if(a.firstName < b.firstName) { return -1; }
             if(a.firstName > b.firstName) { return 1; }
             return 0;
         };
-    }else if(button.classList.contains("sort_by_status")){
+        addCustomersToPage(filteredArray.sort(sortFunction));
+        isNameAscSorted = true
+    }else{
+        resetSort(btn);
+        isNameAscSorted = false;
+    }
+};
+
+function sortRatesAscendingly(btn){
+    if (!isRateAscSorted) {
+        btn.classList.add("sorted");
+        sortFunction = (a, b) => a.rate - b.rate;
+        addCustomersToPage(filteredArray.sort(sortFunction));
+        isRateAscSorted = true;
+    }else{
+        resetSort(btn);
+        isRateAscSorted = false;
+    }
+};
+
+function sortBalancesAscendingly(btn){
+    if (!isBalanceAscSorted) {
+        btn.classList.add("sorted");
+        sortFunction = (a, b) => a.balance - b.balance;
+        addCustomersToPage(filteredArray.sort(sortFunction));
+        isBalanceAscSorted = true;
+    }else{
+        resetSort(btn);
+        isBalanceAscSorted = false;
+    }
+};
+
+function sortDepositAscendingly(btn){
+    if (!isDepositAscSorted) {
+        btn.classList.add("sorted");
+        sortFunction = (a, b) => a.deposit - b.deposit;
+        addCustomersToPage(filteredArray.sort(sortFunction));
+        isDepositAscSorted = true;
+    }else{
+        resetSort(btn);
+        isDepositAscSorted = false;
+    }
+}
+
+function sortStatusAscendingly(btn){
+    if(!isStatusAscSorted){
+        btn.classList.add("sorted");
         sortFunction = function(a, b){
             if(a.status < b.status) { return -1; }
             if(a.status > b.status) { return 1; }
             return 0;
-        };    
-    }else{
-        let sortByValue = button.parentElement.textContent;
-        sortFunction = function(a, b){
-            return a[sortByValue.trim()] - b[sortByValue.trim()];
         };
-    }
-    button.querySelector("i").classList.remove("fa-sort");
-    if (isSorted) {
-        addCustomersToPage(filteredArray.sort(sortFunction).reverse());
-        isSorted = false;
-        button.querySelector("i").classList.remove("fa-sort-down", "desc");
-        button.querySelector("i").classList.add("fa-sort-up", "asc");
-    }else{
         addCustomersToPage(filteredArray.sort(sortFunction));
-        isSorted = true;
-        button.querySelector("i").classList.remove("fa-sort-up", "asc");
-        button.querySelector("i").classList.add("fa-sort-down", "desc");
+        isStatusAscSorted = true;
+    }else{
+        resetSort(btn);
+        isStatusAscSorted = false;
     }
 }
 
-function resetSort(){
-    sortByBtns.forEach(btn =>{
-        btn.querySelector("i").classList.add("fa-sort");
-        btn.querySelector("i").classList.remove("fa-sort-up", "asc", "desc");
-    });
+function resetSort(btn){
+    btn.classList.remove("sorted");
+    displayCustomers();
+}
+//Sort by descending order
+let isNameDescSorted = isRateDescSorted = isBalanceDescSorted = isDepositDescSorted = isStatusDescSorted = false;
+
+descSortBtns.forEach(btn =>{
+    btn.addEventListener("click", ()=>{
+        sortByBtns.forEach(btn => btn.classList.remove("sorted")); 
+        if (btn.classList.contains("sort_by_name")) {
+           sortNamesDescendingly(btn); 
+           isNameAscSorted = isRateAscSorted = isBalanceAscSorted = isDepositAscSorted = isStatusAscSorted = false;
+           isRateDescSorted = isBalanceDescSorted = isDepositDescSorted = isStatusDescSorted = false;
+        }else if(btn.classList.contains("sort_by_rate")){
+            sortRatesDescendingly(btn);
+            isRateAscSorted = isNameAscSorted = isBalanceAscSorted = isDepositAscSorted = isStatusAscSorted = false;
+            isNameDescSorted = isBalanceDescSorted = isDepositDescSorted = isStatusDescSorted = false;
+        }else if(btn.classList.contains("sort_by_balance")){
+            sortBalancesDescendingly(btn);
+            isBalanceAscSorted = isNameAscSorted = isRateAscSorted = isDepositAscSorted = isStatusAscSorted = false;
+            isNameDescSorted = isRateDescSorted = isDepositDescSorted = isStatusDescSorted = false;
+        }else if(btn.classList.contains("sort_by_deposit")){
+            sortDepositDescendingly(btn);
+            isDepositAscSorted = isNameAscSorted = isRateAscSorted = isBalanceAscSorted = isStatusAscSorted = false;
+            isNameDescSorted = isRateDescSorted = isBalanceDescSorted = isStatusDescSorted = false;
+        }else if(btn.classList.contains("sort_by_status")){
+            sortStatusDescendingly(btn);
+            isStatusAscSorted = isNameAscSorted = isRateAscSorted = isBalanceAscSorted = isDepositAscSorted = false;
+            isNameDescSorted = isRateDescSorted = isBalanceDescSorted = isDepositDescSorted = false;
+        }
+    })
+});
+
+function sortNamesDescendingly(btn){
+    if(!isNameDescSorted){
+        btn.classList.add("sorted");
+        sortFunction = function(a, b){
+            if(a.firstName < b.firstName) { return -1; }
+            if(a.firstName > b.firstName) { return 1; }
+            return 0;
+        };
+        addCustomersToPage(filteredArray.sort(sortFunction).reverse());
+        isNameDescSorted = true
+    }else{
+        resetSort(btn);
+        isNameDescSorted = false;
+    }
+};
+
+function sortRatesDescendingly(btn){
+    if (!isRateDescSorted) {
+        btn.classList.add("sorted");
+        sortFunction = (a, b) => a.rate - b.rate;
+        addCustomersToPage(filteredArray.sort(sortFunction).reverse());
+        isRateDescSorted = true;
+    }else{
+        resetSort(btn);
+        isRateDescSorted = false;
+    }
+};
+
+function sortBalancesDescendingly(btn){
+    if (!isBalanceDescSorted) {
+        btn.classList.add("sorted");
+        sortFunction = (a, b) => a.balance - b.balance;
+        addCustomersToPage(filteredArray.sort(sortFunction).reverse());
+        isBalanceDescSorted = true;
+    }else{
+        resetSort(btn);
+        isBalanceDescSorted = false;
+    }
+};
+
+function sortDepositDescendingly(btn){
+    if (!isDepositDescSorted) {
+        btn.classList.add("sorted");
+        sortFunction = (a, b) => a.deposit - b.deposit;
+        addCustomersToPage(filteredArray.sort(sortFunction).reverse());
+        isDepositDescSorted = true;
+    }else{
+        resetSort(btn);
+        isDepositDescSorted = false;
+    }
 }
 
+function sortStatusDescendingly(btn){
+    if(!isStatusDescSorted){
+        btn.classList.add("sorted");
+        sortFunction = function(a, b){
+            if(a.status < b.status) { return -1; }
+            if(a.status > b.status) { return 1; }
+            return 0;
+        };
+        addCustomersToPage(filteredArray.sort(sortFunction).reverse());
+        isStatusDescSorted = true;
+    }else{
+        resetSort(btn);
+        isStatusDescSorted = false;
+    }
+}
+
+function resetSortVariables(){
+    isStatusAscSorted = isNameAscSorted = isRateAscSorted = isBalanceAscSorted = isDepositAscSorted = false;
+    isStatusdescSorted = isNameDescSorted = isRateDescSorted = isBalanceDescSorted = isDepositDescSorted = false;
+};
 // ------------------------------------------------ PopUp-----------------------------------------------------------
 function createPopUp(buttonType, customer) {
     const popUpForm = document.createElement("form");
@@ -480,7 +640,6 @@ function createUpdateBtn(popUpForm){
     popUpForm.appendChild(updateBtn);
     updateBtn.addEventListener("click", ()=>{
         updateCustomer(idToUpdate);
-        resetSort()
     })
 }
 // ------------------------------------------------ Customers -----------------------------------------------------------
@@ -716,7 +875,6 @@ function createDeleteBtn(actionsHolder){
     createDeleteIcon(deleteBtn);
     deleteBtn.addEventListener("click", ()=>{
         createConfirmPopUP(actionsHolder.parentElement.getAttribute("data-id"));
-        resetSort()
     });
 };
 
