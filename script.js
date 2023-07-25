@@ -7,10 +7,17 @@ const selectAllBtn = document.querySelector(".select_all_customers");
 const sortByBtns = document.querySelectorAll(".sort_by");
 const ascSortBtns = document.querySelectorAll(".sort_asc");
 const descSortBtns = document.querySelectorAll(".sort_desc");
+const paginationList = document.querySelector(".pagination_list");
+const prevBtn = document.querySelector(".pagination_btn_prev");
+const nextBtn = document.querySelector(".pagination_btn_next");
+const rowsPerPageList = document.querySelector(".rows_per_page_list");
 let customersArray = [];
 let filteredArray;
 let sortFunction;
 let idToUpdate;
+let customersPerPage = Number(rowsPerPageList.value);
+let pagesNumber;
+let currentPage = 1;
 let firstName, lastName, description, rate, balance, deposit, accountStatus = "active", currency = "mad";
 
 
@@ -22,8 +29,6 @@ addCustomerBtn.addEventListener("click", ()=>{
 searchInput.addEventListener("input", ()=>{
     displayCustomers();
     checkForSelectedCustomers();
-    sortByBtns.forEach(btn => btn.classList.remove("sorted"));
-    resetSortVariables();
 });
 
 //-------------------------------------------------Select Customers ----------------------------------------------------
@@ -51,8 +56,6 @@ selectAllBtn.addEventListener("click", ()=>{
             })
         });
         displayCustomers();
-    }else{
-
     }
 });
 
@@ -88,6 +91,7 @@ function resetSelectAllBtn(){
     selectAllBtn.classList.remove("isSelected");
 };
 // ------------------------------------------------ Sort----------------------------------------------------------------
+
 //Sort by ascending order
 let isNameAscSorted = isRateAscSorted = isBalanceAscSorted = isDepositAscSorted = isStatusAscSorted = false;
 ascSortBtns.forEach(btn =>{
@@ -291,6 +295,70 @@ function resetSortVariables(){
     isStatusAscSorted = isNameAscSorted = isRateAscSorted = isBalanceAscSorted = isDepositAscSorted = false;
     isStatusdescSorted = isNameDescSorted = isRateDescSorted = isBalanceDescSorted = isDepositDescSorted = false;
 };
+
+//--------------------------------------------pagination----------------------------------------------------------------------------------
+rowsPerPageList.addEventListener("change", ()=>{
+    if(rowsPerPageList.value === "all"){
+        customersPerPage = customersArray.length;
+        console.log("all");
+    }else{
+        customersPerPage = Number(rowsPerPageList.value);
+    }
+    
+    displayCustomers();
+})
+
+function createPagination(){
+    if(searchInput.value.trim()){
+        pagesNumber = Math.ceil(filteredArray.length / customersPerPage);
+    }else{
+        pagesNumber = Math.ceil(customersArray.length / customersPerPage);
+    }
+
+   disableNextAndPrev();
+   
+    paginationList.innerHTML = "";
+    for(let i = 1; i <= pagesNumber; i++){
+        createPaginationBtns(i);
+    }
+}
+
+function disableNextAndPrev(){
+    if(currentPage === 1){
+        prevBtn.classList.add("disabled")
+    }else{
+        prevBtn.classList.remove("disabled")
+    }
+
+    if(currentPage === pagesNumber){
+        nextBtn.classList.add("disabled")
+    }else{
+        nextBtn.classList.remove("disabled")
+    }
+};
+
+function createPaginationBtns(i){
+    const paginationBtn = document.createElement("button");
+    paginationBtn.className ="pagination_btn";
+    if(currentPage === i){
+        paginationBtn.classList.add("active");
+    }
+    paginationBtn.textContent = i;
+    paginationList.appendChild(paginationBtn);
+    paginationBtn.addEventListener("click", ()=>{
+        currentPage = i;
+        displayCustomers()
+    })
+};
+
+prevBtn.addEventListener("click", ()=>{
+     currentPage === 1? currentPage: currentPage = currentPage -1;
+     displayCustomers();
+    });
+nextBtn.addEventListener("click", ()=>{
+    currentPage === pagesNumber? currentPage: currentPage = currentPage +1;
+    displayCustomers();
+});
 // ------------------------------------------------ PopUp-----------------------------------------------------------
 function createPopUp(buttonType, customer) {
     const popUpForm = document.createElement("form");
@@ -639,7 +707,7 @@ function createUpdateBtn(popUpForm){
     updateBtn.textContent = "Update";
     popUpForm.appendChild(updateBtn);
     updateBtn.addEventListener("click", ()=>{
-        updateCustomer(idToUpdate);
+        updateCustomer(idToUpdate, popUpForm);
     })
 }
 // ------------------------------------------------ Customers -----------------------------------------------------------
@@ -683,14 +751,16 @@ function displayCustomers(){
     let searchValue = searchInput.value.trim().toLocaleLowerCase();
     filteredArray = customersArray.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchValue) || customer.lastName.toLocaleLowerCase().includes(searchValue) || customer.description.toLocaleLowerCase().includes(searchValue));
    addCustomersToPage();
-   updateActiveCustomersNumbers();
+   sortByBtns.forEach(btn => btn.classList.remove("sorted"));
+    resetSortVariables();
 }
 
 function addCustomersToPage(){
     customersWrapper.innerHTML = "";
-    filteredArray.forEach(customer =>{
+    createPagination();
+    filteredArray = filteredArray.slice((currentPage -1) * customersPerPage, currentPage * customersPerPage)
+    filteredArray.forEach((customer) =>{
         createCustomerRow(customer);
-
     });
 
     function createCustomerRow(customer){
@@ -712,6 +782,7 @@ function addCustomersToPage(){
         createCustomerStatus(customerRow, customer);
         createActionsHolder(customerRow, customer);
     }
+    updateActiveCustomersNumbers();
 }
 
 function createCheckBox(customerRow, customer){
@@ -941,7 +1012,7 @@ function clearCustomerValues(){
     document.querySelector(".pop_up_currency").value = currency;
 }
 
-function updateCustomer(idToUpdate){
+function updateCustomer(idToUpdate, popUpForm){
     customersArray.forEach(customer =>{
         if (customer.id === idToUpdate) {
             customer.firstName = `${firstName.charAt(0).toUpperCase()}${firstName.slice(1).toLowerCase()}`;
@@ -957,9 +1028,11 @@ function updateCustomer(idToUpdate){
     displayCustomers();
     localStorage.setItem("customers", JSON.stringify(customersArray));
     clearCustomerValues();
+    closePopUp(popUpForm)
 }
 
 function updateActiveCustomersNumbers(){
     document.querySelector(".active_customers_number").textContent = filteredArray.filter(customer => customer.status === "active").length;
     document.querySelector(".all_customers_number").textContent = filteredArray.length;
 }
+
