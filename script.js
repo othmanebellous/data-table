@@ -28,7 +28,7 @@ addCustomerBtn.addEventListener("click", ()=>{
 
 searchInput.addEventListener("input", ()=>{
     displayCustomers();
-    checkForSelectedCustomers();
+    // checkForSelectedCustomers();
 });
 
 //-------------------------------------------------Select Customers ----------------------------------------------------
@@ -300,7 +300,7 @@ function resetSortVariables(){
 rowsPerPageList.addEventListener("change", ()=>{
     if(rowsPerPageList.value === "all"){
         customersPerPage = customersArray.length;
-        console.log("all");
+        
     }else{
         customersPerPage = Number(rowsPerPageList.value);
     }
@@ -753,6 +753,7 @@ function displayCustomers(){
    addCustomersToPage();
    sortByBtns.forEach(btn => btn.classList.remove("sorted"));
     resetSortVariables();
+    checkForSelectedCustomers();
 }
 
 function addCustomersToPage(){
@@ -762,7 +763,9 @@ function addCustomersToPage(){
     filteredArray.forEach((customer) =>{
         createCustomerRow(customer);
     });
-
+    updateActiveCustomersNumbers();
+    checkIfLastCustomerOdd();
+}
     function createCustomerRow(customer){
         const customerRow = document.createElement("tr");
         customerRow.setAttribute("data-id", customer.id);
@@ -782,8 +785,6 @@ function addCustomersToPage(){
         createCustomerStatus(customerRow, customer);
         createActionsHolder(customerRow, customer);
     }
-    updateActiveCustomersNumbers();
-}
 
 function createCheckBox(customerRow, customer){
     const checkBoxHolder = document.createElement("td");
@@ -807,7 +808,7 @@ function createCheckBoxInput(checkBoxHolder, customer){
         }else{
             customer.selected = false;
         }
-        checkForSelectedCustomers();
+        // checkForSelectedCustomers();
         displayCustomers();
         //update local storage
         localStorage.setItem("customers", JSON.stringify(customersArray));
@@ -1036,3 +1037,10 @@ function updateActiveCustomersNumbers(){
     document.querySelector(".all_customers_number").textContent = filteredArray.length;
 }
 
+function checkIfLastCustomerOdd(){
+    if(filteredArray.length %2 !== 0){
+        document.querySelector(".footer").style.backgroundColor = "#F4F7FC";
+    }else{
+        document.querySelector(".footer").style.backgroundColor = "#FFFFFF";
+      }
+}
