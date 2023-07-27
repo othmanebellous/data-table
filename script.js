@@ -322,15 +322,15 @@ function createPagination(){
 
 function disableNextAndPrev(){
     if(currentPage === 1){
-        prevBtn.classList.add("disabled")
+        prevBtn.classList.add("hide")
     }else{
-        prevBtn.classList.remove("disabled")
+        prevBtn.classList.remove("hide")
     }
 
     if(currentPage === pagesNumber){
-        nextBtn.classList.add("disabled")
+        nextBtn.classList.add("hide")
     }else{
-        nextBtn.classList.remove("disabled")
+        nextBtn.classList.remove("hide")
     }
 };
 
@@ -758,11 +758,11 @@ function displayCustomers(){
 
 function addCustomersToPage(){
     customersWrapper.innerHTML = "";
-    // if(filteredArray.length <= customersPerPage){
-    //     currentPage = 1;
-    // }
     createPagination();
-    filteredArray = filteredArray.slice((currentPage -1) * customersPerPage, currentPage * customersPerPage)
+    filteredArray = filteredArray.slice((currentPage -1) * customersPerPage, currentPage * customersPerPage);
+    if (filteredArray.length === 0) {
+        displayMessage();
+    }
     filteredArray.forEach((customer) =>{
         createCustomerRow(customer);
     });
@@ -1044,4 +1044,14 @@ function checkIfLastCustomerOdd(){
     }else{
         document.querySelector(".footer").style.backgroundColor = "#FFFFFF";
       }
+}
+
+function displayMessage(){
+    const tr = document.createElement("tr");
+    document.querySelector("tbody").appendChild(tr);
+    const td = document.createElement("td");
+    td.setAttribute("colspan", "8");
+    td.className="message";
+    td.textContent ="No data to show!"
+    tr.appendChild(td);
 }

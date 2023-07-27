@@ -78,6 +78,10 @@ th, td {
   padding: 15px 0;
 }
 
+.hide {
+  display: none;
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -493,4 +497,8 @@ th, td {
 }
 .confirm_cancel:hover {
   background: #868686;
+}
+
+.message {
+  text-align: center;
 }/*# sourceMappingURL=style.css.map */

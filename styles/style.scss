@@ -80,6 +80,10 @@ th,td{
     padding: 15px 0;
 }
 
+.hide{
+    display: none;
+}
+
 .header{
     @include flexAlignCenter;
     background-color: #F4F7FC;
@@ -488,4 +492,8 @@ th,td{
     &:hover {
         background: #868686;
       }
+  }
+
+  .message{
+    text-align: center;
   }
