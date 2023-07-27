@@ -28,7 +28,7 @@ addCustomerBtn.addEventListener("click", ()=>{
 
 searchInput.addEventListener("input", ()=>{
     displayCustomers();
-    // checkForSelectedCustomers();
+    checkForSelectedCustomers();
 });
 
 //-------------------------------------------------Select Customers ----------------------------------------------------
@@ -65,6 +65,8 @@ function checkForSelectedCustomers(){
             selectAllBtn.innerHTML="";
         addIcon("check");
         selectAllBtn.classList.add("isSelected");
+        }else{
+            resetSelectAllBtn();
         }
     }else if (filteredArray.some(customer => customer.selected)) {
         selectAllBtn.innerHTML="";
