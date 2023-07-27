@@ -304,7 +304,7 @@ rowsPerPageList.addEventListener("change", ()=>{
     }else{
         customersPerPage = Number(rowsPerPageList.value);
     }
-    
+    currentPage = 1;
     displayCustomers();
 })
 
@@ -317,10 +317,7 @@ function createPagination(){
 
    disableNextAndPrev();
    
-    paginationList.innerHTML = "";
-    for(let i = 1; i <= pagesNumber; i++){
-        createPaginationBtns(i);
-    }
+    createPaginationBtns();
 }
 
 function disableNextAndPrev(){
@@ -337,18 +334,21 @@ function disableNextAndPrev(){
     }
 };
 
-function createPaginationBtns(i){
-    const paginationBtn = document.createElement("button");
-    paginationBtn.className ="pagination_btn";
-    if(currentPage === i){
-        paginationBtn.classList.add("active");
+function createPaginationBtns(){
+    paginationList.innerHTML = "";
+    for(let i = 1; i <= pagesNumber; i++){
+        const paginationBtn = document.createElement("button");
+        paginationBtn.className ="pagination_btn";
+        if(currentPage === i){
+            paginationBtn.classList.add("active");
+        }
+        paginationBtn.textContent = i;
+        paginationList.appendChild(paginationBtn);
+        paginationBtn.addEventListener("click", ()=>{
+            currentPage = i;
+            displayCustomers()
+        })
     }
-    paginationBtn.textContent = i;
-    paginationList.appendChild(paginationBtn);
-    paginationBtn.addEventListener("click", ()=>{
-        currentPage = i;
-        displayCustomers()
-    })
 };
 
 prevBtn.addEventListener("click", ()=>{
@@ -717,7 +717,7 @@ if(localStorage.getItem("customers") && JSON.parse(localStorage.getItem('custome
     customersArray.forEach(customer=> customer.selected = false)
     displayCustomers();
 }else{
-    customersArray= [{ id: 1690115452012, firstName: "Othmane", lastName: "Bellous", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "4", balance: "7", deposit: "5", status: "active", currency: "mad", selected: false },{ id: 1690115452012, firstName: "Matthew", lastName: "Schreck", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "20", balance: "30", deposit: "100", status: "inactive", currency: "usd", selected: false },{ id: 1690115452012, firstName: "David", lastName: "Henry", description: "aa", rate: "4", balance: "7", deposit: "5", status: "active", currency: "euro", selected: false },{ id: 1690115452012, firstName: "Robert", lastName: "Davis", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "14", balance: "17", deposit: "500", status: "active", currency: "euro", selected: false },{ id: 1690115452012, firstName: "Howis", lastName: "Hamilton", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "44", balance: "777", deposit: "390", status: "active", currency: "euro", selected: false }]
+    customersArray= [{ id: 1690115452013, firstName: "Othmane", lastName: "Bellous", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "4", balance: "7", deposit: "5", status: "active", currency: "mad", selected: false },{ id: 1690115452014, firstName: "Matthew", lastName: "Schreck", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "20", balance: "30", deposit: "100", status: "inactive", currency: "usd", selected: false },{ id: 1690115452015, firstName: "David", lastName: "Henry", description: "aa", rate: "4", balance: "7", deposit: "5", status: "active", currency: "euro", selected: false },{ id: 1690115452016, firstName: "Robert", lastName: "Davis", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "14", balance: "17", deposit: "500", status: "active", currency: "euro", selected: false },{ id: 1690115452017, firstName: "Howis", lastName: "Hamilton", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", rate: "44", balance: "777", deposit: "390", status: "active", currency: "euro", selected: false }]
     localStorage.setItem("customers", JSON.stringify(customersArray));
     displayCustomers();
 }
@@ -737,12 +737,12 @@ function createNewCustomer(){
         currency: currency,
         selected: false,
     }
-    addCustomerToLocalStorage(customer);
+    customersArray.unshift(customer);
+    addCustomerToLocalStorage();
     clearCustomerValues();
 }
 
-function addCustomerToLocalStorage(customer){
-    customersArray.unshift(customer);
+function addCustomerToLocalStorage(){
     localStorage.setItem("customers", JSON.stringify(customersArray));
     displayCustomers();
 }
@@ -758,6 +758,9 @@ function displayCustomers(){
 
 function addCustomersToPage(){
     customersWrapper.innerHTML = "";
+    // if(filteredArray.length <= customersPerPage){
+    //     currentPage = 1;
+    // }
     createPagination();
     filteredArray = filteredArray.slice((currentPage -1) * customersPerPage, currentPage * customersPerPage)
     filteredArray.forEach((customer) =>{
@@ -808,9 +811,7 @@ function createCheckBoxInput(checkBoxHolder, customer){
         }else{
             customer.selected = false;
         }
-        // checkForSelectedCustomers();
         displayCustomers();
-        //update local storage
         localStorage.setItem("customers", JSON.stringify(customersArray));
     })
 }
@@ -969,7 +970,7 @@ function createConfirmButtons(confirmDoalog, id){
 function createConfirmOkBtn(confirmButtons, confirmDoalog, id){
     const confirmOkBtn = document.createElement("button");
     confirmOkBtn.classList.add("confirm_ok", "blue_btn");
-    confirmOkBtn.textContent="Ok";
+    confirmOkBtn.textContent="Yes";
     confirmButtons.appendChild(confirmOkBtn);
     confirmOkBtn.addEventListener("click", ()=>{
         deleteCustomer(id);
