@@ -11,7 +11,7 @@ body{
     @include flexCenter;
     position: relative;
     font-family: 'Inter', sans-serif;
-    background-color: #DAE1EC;
+    background-color: $backgroundColor;
     height: 100vh;
     &.overlay::after{
         content: "";
@@ -25,7 +25,7 @@ body{
 
 main{
     width: 90%;
-    background-color: #FFFFFF;
+    background-color: $whiteColor;
     border-radius: 5px;
     
 }
@@ -40,7 +40,7 @@ input, textarea{
     border: none;
     border-radius: 4px;
     color: $primaryTextColor;
-    background-color: #DAE1EC;
+    background-color: $backgroundColor;
     resize: none;
 }
 
@@ -100,7 +100,7 @@ th,td{
     width: 300px;
     height: 40px;
     padding: 10px;
-    background-color: #DAE1EC;
+    background-color: $backgroundColor;
     border-radius: 4px;
     &::before{
         content: "\f002";
@@ -123,7 +123,7 @@ th,td{
     height: 40px;
     background-color: $primaryColor;
     font-weight: 600;
-    color: #FFFFFF;
+    color: $whiteColor;
     margin-left: auto;
     border-radius: 4px;
     &::before{
@@ -162,7 +162,7 @@ th,td{
         border-color: #0060df;
         background-color: #0060df;
         border-radius: 2px;
-        color: #FFFFFF;
+        color: $whiteColor;
         font-size: 16px;
         @include flexCenter;
     }
@@ -256,7 +256,7 @@ th,td{
     padding: 5px 6px;
     &.active{
         background-color: $primaryColor;
-        color: #FFFFFF;
+        color: $whiteColor;
     }
     &.inactive{
         border: 1px solid $secondaryColor;
@@ -381,7 +381,7 @@ th,td{
 
 .pop_up, .confirm_dialog{
     position: fixed;
-    background-color: #FFFFFF;
+    background-color: $whiteColor;
     border-radius: 5px;
     top: 50%;
     left: 50%;
@@ -440,7 +440,7 @@ th,td{
     color: $primaryTextColor;
     padding: 2px 6px;
     &:hover{
-        background: #DAE1EC;
+        background: $backgroundColor;
         border-radius: 4px;
     }
   }

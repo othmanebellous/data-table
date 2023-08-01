@@ -709,7 +709,7 @@ function createUpdateBtn(popUpForm){
     updateBtn.textContent = "Update";
     popUpForm.appendChild(updateBtn);
     updateBtn.addEventListener("click", ()=>{
-        updateCustomer(idToUpdate, popUpForm);
+        updateCustomer(popUpForm);
     })
 }
 // ------------------------------------------------ Customers -----------------------------------------------------------
@@ -1016,7 +1016,7 @@ function clearCustomerValues(){
     document.querySelector(".pop_up_currency").value = currency;
 }
 
-function updateCustomer(idToUpdate, popUpForm){
+function updateCustomer(popUpForm){
     customersArray.forEach(customer =>{
         if (customer.id === idToUpdate) {
             customer.firstName = `${firstName.charAt(0).toUpperCase()}${firstName.slice(1).toLowerCase()}`;
