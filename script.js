@@ -46,7 +46,6 @@ selectAllBtn.addEventListener("click", ()=>{
         displayCustomers();
     }else if (filteredArray.every(customer => !customer.selected)) {
         addIcon("check");
-        selectAllBtn.classList.add("isSelected");
         filteredArray.forEach(customer => {
             customer.selected = true;
             customersArray.forEach(orignalCustomer =>{
@@ -64,20 +63,19 @@ function checkForSelectedCustomers(){
         if (filteredArray.length !== 0) {
             selectAllBtn.innerHTML="";
         addIcon("check");
-        selectAllBtn.classList.add("isSelected");
         }else{
             resetSelectAllBtn();
         }
     }else if (filteredArray.some(customer => customer.selected)) {
         selectAllBtn.innerHTML="";
         addIcon("minus");
-        selectAllBtn.classList.add("isSelected");
     }else{
         resetSelectAllBtn();
     }
 };
 
 function addIcon(iconType){
+    selectAllBtn.classList.add("isSelected");
     const icon =document.createElement("i");
     icon.className="fa-solid";
     if(iconType === "minus"){
