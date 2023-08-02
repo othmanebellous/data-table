@@ -126,7 +126,7 @@ ascSortBtns.forEach(btn =>{
 function sortNamesAscendingly(btn){
     if(!isNameAscSorted){
         btn.classList.add("sorted");
-        sortFunction = function(a, b){
+        sortFunction = (a, b) =>{
             if(a.firstName < b.firstName) { return -1; }
             if(a.firstName > b.firstName) { return 1; }
             return 0;
@@ -178,7 +178,7 @@ function sortDepositAscendingly(btn){
 function sortStatusAscendingly(btn){
     if(!isStatusAscSorted){
         btn.classList.add("sorted");
-        sortFunction = function(a, b){
+        sortFunction = (a, b) =>{
             if(a.status < b.status) { return -1; }
             if(a.status > b.status) { return 1; }
             return 0;
@@ -228,7 +228,7 @@ descSortBtns.forEach(btn =>{
 function sortNamesDescendingly(btn){
     if(!isNameDescSorted){
         btn.classList.add("sorted");
-        sortFunction = function(a, b){
+        sortFunction = (a, b) =>{
             if(a.firstName < b.firstName) { return -1; }
             if(a.firstName > b.firstName) { return 1; }
             return 0;
@@ -280,7 +280,7 @@ function sortDepositDescendingly(btn){
 function sortStatusDescendingly(btn){
     if(!isStatusDescSorted){
         btn.classList.add("sorted");
-        sortFunction = function(a, b){
+        sortFunction = (a, b) =>{
             if(a.status < b.status) { return -1; }
             if(a.status > b.status) { return 1; }
             return 0;
