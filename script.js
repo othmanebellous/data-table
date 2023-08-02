@@ -354,11 +354,11 @@ function createPaginationBtns(){
 };
 
 prevBtn.addEventListener("click", ()=>{
-     currentPage === 1? currentPage: currentPage = currentPage -1;
+     currentPage = currentPage -1;
      displayCustomers();
     });
 nextBtn.addEventListener("click", ()=>{
-    currentPage === pagesNumber? currentPage: currentPage = currentPage +1;
+    currentPage = currentPage +1;
     displayCustomers();
 });
 // ------------------------------------------------ PopUp-----------------------------------------------------------
