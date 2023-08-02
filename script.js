@@ -7,9 +7,7 @@ const selectAllBtn = document.querySelector(".select_all_customers");
 const sortByBtns = document.querySelectorAll(".sort_by");
 const ascSortBtns = document.querySelectorAll(".sort_asc");
 const descSortBtns = document.querySelectorAll(".sort_desc");
-const paginationList = document.querySelector(".pagination_list");
-const prevBtn = document.querySelector(".pagination_btn_prev");
-const nextBtn = document.querySelector(".pagination_btn_next");
+const paginationNav = document.querySelector(".pagination");
 const rowsPerPageList = document.querySelector(".rows_per_page_list");
 let customersArray = [];
 let filteredArray;
@@ -314,28 +312,38 @@ function createPagination(){
     }else{
         pagesNumber = Math.ceil(customersArray.length / customersPerPage);
     }
-
-   disableNextAndPrev();
    
     createPaginationBtns();
 }
 
-function disableNextAndPrev(){
-    if(currentPage === 1){
-        prevBtn.classList.add("hide")
-    }else{
-        prevBtn.classList.remove("hide")
-    }
-
-    if(currentPage === pagesNumber){
-        nextBtn.classList.add("hide")
-    }else{
-        nextBtn.classList.remove("hide")
+function createPaginationBtns(){
+    paginationNav.innerHTML="";
+    if(pagesNumber > 1){
+        if(currentPage !== 1){
+            createPrevBtn();
+        }
+        createPaginationNumbers();
+        if(currentPage !== pagesNumber){
+            createNextBtn();
+        }
     }
 };
 
-function createPaginationBtns(){
-    paginationList.innerHTML = "";
+function createPrevBtn(){
+    const prevBtn = document.createElement("button");
+    prevBtn.className ="pagination_btn_prev";
+    prevBtn.textContent="Prev";
+    paginationNav.insertBefore(prevBtn, paginationNav.firstChild);
+    prevBtn.addEventListener("click", ()=>{
+        currentPage = currentPage -1;
+        displayCustomers();
+       });
+}
+
+function createPaginationNumbers(){
+    const numbersHolder = document.createElement("div");
+    numbersHolder.className ="pagination_list";
+    paginationNav.appendChild(numbersHolder)
     for(let i = 1; i <= pagesNumber; i++){
         const paginationBtn = document.createElement("button");
         paginationBtn.className ="pagination_btn";
@@ -343,22 +351,25 @@ function createPaginationBtns(){
             paginationBtn.classList.add("active");
         }
         paginationBtn.textContent = i;
-        paginationList.appendChild(paginationBtn);
+        numbersHolder.appendChild(paginationBtn);
         paginationBtn.addEventListener("click", ()=>{
             currentPage = i;
             displayCustomers()
         })
     }
-};
+}
 
-prevBtn.addEventListener("click", ()=>{
-     currentPage = currentPage -1;
-     displayCustomers();
-    });
-nextBtn.addEventListener("click", ()=>{
-    currentPage = currentPage +1;
-    displayCustomers();
-});
+function createNextBtn(){
+    const nextBtn = document.createElement("button");
+    nextBtn.className ="pagination_btn_next";
+    nextBtn.textContent="Next";
+    paginationNav.appendChild(nextBtn);
+    nextBtn.addEventListener("click", ()=>{
+        currentPage = currentPage +1;
+        displayCustomers();
+       });
+}
+
 // ------------------------------------------------ PopUp-----------------------------------------------------------
 function createPopUp(buttonType, customer) {
     const popUpForm = document.createElement("form");
